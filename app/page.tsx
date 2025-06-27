@@ -107,17 +107,17 @@ export default function Home() {
     const renderGame = () => {
         switch (selectedGame) {
             case 'quiz':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} quizType="general" />
+                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'math':
                 return <MathGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'color':
                 return <ColorGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'science':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} quizType="science" />
+                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'animals':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} quizType="animals" />
+                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'geography':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} quizType="geography" />
+                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'memory':
                 return <MemoryGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'drawing':
