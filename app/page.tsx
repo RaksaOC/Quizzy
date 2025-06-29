@@ -2,13 +2,16 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Brain, Gamepad2, Calculator, Palette, Star, Trophy, Brush, UserCircle2, Sparkles, BookOpen, Zap } from 'lucide-react'
+import { Brain, Gamepad2, Calculator, Palette, Star, Trophy, Brush, UserCircle2, Sparkles, BookOpen, Zap, TestTube, PawPrint, Globe } from 'lucide-react'
 import QuizGame from './components/QuizGame'
 import MemoryGame from './components/MemoryGame'
 import MathGame from './components/MathGame'
 import ColorGame from './components/ColorGame'
 import DrawingGame from './components/DrawingGame'
 import CharacterCreator from './components/CharacterCreator'
+import ScienceGame from './components/ScienceGame'
+import AnimalsGame from './components/AnimalsGame'
+import GeographyGame from './components/GeographyGame'
 
 export default function Home() {
     const [selectedGame, setSelectedGame] = useState<string | null>(null)
@@ -18,7 +21,7 @@ export default function Home() {
         {
             id: 'quiz',
             name: 'Fun Quiz',
-            description: 'Answer fun questions and learn new things!',
+            description: 'Answer 35 fun questions about nature, animals, food, and more!',
             icon: Brain,
             color: '#4ECDC4',
             gradient: 'from-cyan-400 to-teal-500'
@@ -26,7 +29,7 @@ export default function Home() {
         {
             id: 'math',
             name: 'Math Challenge',
-            description: 'Solve math problems and become a math wizard!',
+            description: 'Solve 32 math problems including addition, subtraction, multiplication, and more!',
             icon: Calculator,
             color: '#45B7D1',
             gradient: 'from-blue-400 to-cyan-500'
@@ -34,7 +37,7 @@ export default function Home() {
         {
             id: 'color',
             name: 'Color & Shapes',
-            description: 'Learn colors and shapes in a fun way!',
+            description: 'Learn colors, shapes, patterns, and object recognition with 24 questions!',
             icon: Palette,
             color: '#FFE66D',
             gradient: 'from-yellow-400 to-orange-400'
@@ -42,24 +45,24 @@ export default function Home() {
         {
             id: 'science',
             name: 'Science Quiz',
-            description: 'Discover amazing facts about science!',
-            icon: Brain,
+            description: 'Discover 35 amazing facts about space, plants, weather, and science!',
+            icon: TestTube,
             color: '#FF6B9D',
             gradient: 'from-pink-400 to-purple-500'
         },
         {
             id: 'animals',
             name: 'Animal Quiz',
-            description: 'Learn about amazing animals around the world!',
-            icon: Brain,
+            description: 'Learn about 35 amazing animals from farm, wild, pets, and sea creatures!',
+            icon: PawPrint,
             color: '#A8E6CF',
             gradient: 'from-green-400 to-emerald-500'
         },
         {
             id: 'geography',
             name: 'Geography Quiz',
-            description: 'Explore countries, cities, and places!',
-            icon: Brain,
+            description: 'Explore 35 countries, cities, landmarks, and places around the world!',
+            icon: Globe,
             color: '#FF8A65',
             gradient: 'from-orange-400 to-red-500'
         }
@@ -113,11 +116,11 @@ export default function Home() {
             case 'color':
                 return <ColorGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'science':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
+                return <ScienceGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'animals':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
+                return <AnimalsGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'geography':
-                return <QuizGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
+                return <GeographyGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'memory':
                 return <MemoryGame onBack={handleBackToMenu} onScoreUpdate={handleScoreUpdate} />
             case 'drawing':
