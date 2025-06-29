@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, CheckCircle, XCircle, Star, Trophy, Flask } from 'lucide-react'
+import { ArrowLeft, CheckCircle, XCircle, Star, Trophy, TestTube } from 'lucide-react'
 
 interface ScienceGameProps {
     onBack: () => void
@@ -469,7 +469,7 @@ export default function ScienceGame({ onBack, onScoreUpdate }: ScienceGameProps)
                             transition={{ duration: 2, repeat: Infinity }}
                             className="text-6xl mb-4"
                         >
-                            🧪
+                            <TestTube className="w-12 h-12 text-white" />
                         </motion.div>
 
                         <h2 className="text-3xl font-bold text-gray-800 mb-4">
