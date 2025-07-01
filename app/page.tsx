@@ -190,7 +190,7 @@ export default function Home() {
                         onClick={() => handleGameSelect(game.id)}
                     >
                         <div className={`
-                            relative overflow-hidden rounded-3xl p-8 h-72
+                            relative overflow-hidden rounded-3xl p-8 min-h-96
                             bg-gradient-to-br ${game.gradient}
                             shadow-2xl glow hover:glow
                             transform transition-all duration-500
