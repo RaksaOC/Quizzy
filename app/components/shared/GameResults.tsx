@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Trophy, Star, ArrowLeft, RotateCcw } from 'lucide-react'
-import { Player } from '@/hooks/useGameState'
+import { Player } from '@/app/hooks/useGameState'
 
 interface GameResultsProps {
     winner: Player
