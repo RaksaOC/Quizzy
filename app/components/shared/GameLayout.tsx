@@ -151,4 +151,62 @@ export default function GameLayout({
             </ModalDialog>
         </div>
     )
+}
+
+interface SinglePlayerGameLayoutProps {
+    title: string
+    onBack: () => void
+    gradientColors: {
+        from: string
+        via: string
+        to: string
+        overlayFrom: string
+        overlayVia: string
+        overlayTo: string
+    }
+    children: React.ReactNode
+}
+
+export function SinglePlayerGameLayout({ title, onBack, gradientColors, children }: SinglePlayerGameLayoutProps) {
+    return (
+        <div className={`min-h-screen bg-gradient-to-br from-${gradientColors.from} via-${gradientColors.via} to-${gradientColors.to} p-4 relative overflow-hidden`}>
+            {/* Background Animation */}
+            <AnimatedBackground
+                gradientFrom={gradientColors.from}
+                gradientVia={gradientColors.via}
+                gradientTo={gradientColors.to}
+                overlayFrom={gradientColors.overlayFrom}
+                overlayVia={gradientColors.overlayVia}
+                overlayTo={gradientColors.overlayTo}
+            />
+
+            <div className="relative z-10">
+                {/* Header */}
+                <div className="max-w-7xl mx-auto mb-8">
+                    <div className="flex justify-between items-center">
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={onBack}
+                            className="flex items-center gap-2 text-white font-bold text-lg hover:bg-white/20 rounded-full px-4 py-2 transition-all"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            Back
+                        </motion.button>
+
+                        <h1 className="text-4xl font-bold text-white text-center">
+                            {title}
+                        </h1>
+
+                        <div className="w-24" /> {/* Spacer for alignment */}
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="relative">
+                    {children}
+                </div>
+            </div>
+        </div>
+    )
 } 

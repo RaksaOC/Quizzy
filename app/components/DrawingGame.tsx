@@ -2,7 +2,8 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Trash2, Brush, Eraser } from 'lucide-react'
+import { ArrowLeft, Trash2, Brush, Eraser, Download } from 'lucide-react'
+import { SinglePlayerGameLayout } from './shared/GameLayout'
 
 interface DrawingGameProps {
     onBack: () => void
@@ -35,6 +36,8 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
         context.lineJoin = 'round'
         context.strokeStyle = currentColor
         context.lineWidth = brushSize
+        context.fillStyle = '#FFFFFF'
+        context.fillRect(0, 0, canvas.width, canvas.height)
         contextRef.current = context
     }, [])
 
@@ -73,37 +76,54 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
         const canvas = canvasRef.current
         const context = contextRef.current
         if (canvas && context) {
-            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.fillStyle = '#FFFFFF'
+            context.fillRect(0, 0, canvas.width, canvas.height)
         }
     }
 
     const handleColorChange = (color: string) => {
         if (color === 'eraser') {
-            setCurrentColor('#FFFFFF') // Use white as an eraser on a white background
+            setCurrentColor('#FFFFFF')
         } else {
             setCurrentColor(color)
         }
     }
 
+    const downloadDrawing = () => {
+        const canvas = canvasRef.current
+        if (!canvas) return
+
+        const link = document.createElement('a')
+        link.download = 'my-drawing.png'
+        link.href = canvas.toDataURL()
+        link.click()
+    }
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-400 to-cyan-400 p-4">
-            <div className="max-w-6xl mx-auto">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
+        <SinglePlayerGameLayout
+            title="Drawing Studio"
+            onBack={onBack}
+            gradientColors={{
+                from: 'indigo-400',
+                via: 'blue-500',
+                to: 'cyan-400',
+                overlayFrom: 'blue-400',
+                overlayVia: 'indigo-500',
+                overlayTo: 'cyan-500'
+            }}
+        >
+            <div className="max-w-6xl mx-auto space-y-6">
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-4">
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={onBack}
-                        className="flex items-center gap-2 text-white font-bold text-lg hover:bg-white/20 rounded-full px-4 py-2 transition-all"
+                        onClick={downloadDrawing}
+                        className="flex items-center gap-2 text-white font-bold text-lg bg-green-500/80 hover:bg-green-500 rounded-full px-4 py-2 transition-all"
                     >
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Menu
+                        <Download className="w-5 h-5" />
+                        Save
                     </motion.button>
-
-                    <h1 className="text-4xl font-bold text-white text-center">
-                        🎨 Let's Draw! 🎨
-                    </h1>
-
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -128,7 +148,7 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
                         onMouseUp={finishDrawing}
                         onMouseMove={draw}
                         onMouseLeave={finishDrawing}
-                        className="w-full h-[60vh] bg-white rounded-2xl shadow-2xl cursor-crosshair"
+                        className="w-full h-[60vh] rounded-3xl shadow-2xl cursor-crosshair border-4 border-white/20"
                     />
                 </motion.div>
 
@@ -137,10 +157,13 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="mt-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg"
+                    className="p-6 bg-white/20 backdrop-blur-sm rounded-3xl shadow-lg border-2 border-white/20"
                 >
                     {/* Color Palette */}
-                    <div className="flex justify-center items-center gap-3 mb-4">
+                    <div className="flex justify-center items-center gap-3 mb-6">
+                        <div className="bg-white/20 p-2 rounded-full">
+                            <Brush className="w-6 h-6 text-white" />
+                        </div>
                         <h3 className="text-white font-bold mr-4">Colors</h3>
                         {colors.map(color => (
                             <motion.button
@@ -148,7 +171,7 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
                                 whileHover={{ scale: 1.2 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => handleColorChange(color)}
-                                className={`w-10 h-10 rounded-full border-4 ${currentColor === color ? 'border-yellow-300' : 'border-white/50'}`}
+                                className={`w-10 h-10 rounded-full border-4 ${currentColor === color ? 'border-yellow-300 shadow-lg' : 'border-white/50'}`}
                                 style={{ backgroundColor: color }}
                             />
                         ))}
@@ -156,7 +179,7 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
                             whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => handleColorChange('eraser')}
-                            className={`w-10 h-10 rounded-full border-4 flex items-center justify-center bg-white ${currentColor === '#FFFFFF' ? 'border-yellow-300' : 'border-white/50'}`}
+                            className={`w-10 h-10 rounded-full border-4 flex items-center justify-center bg-white ${currentColor === '#FFFFFF' ? 'border-yellow-300 shadow-lg' : 'border-white/50'}`}
                         >
                             <Eraser className="w-6 h-6 text-gray-600" />
                         </motion.button>
@@ -164,8 +187,10 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
 
                     {/* Brush Size */}
                     <div className="flex justify-center items-center gap-3">
+                        <div className="bg-white/20 p-2 rounded-full">
+                            <Brush className="w-6 h-6 text-white" />
+                        </div>
                         <h3 className="text-white font-bold mr-4">Brush Size</h3>
-                        <Brush className="w-6 h-6 text-white" />
                         <input
                             type="range"
                             min="2"
@@ -178,6 +203,6 @@ export default function DrawingGame({ onBack }: DrawingGameProps) {
                     </div>
                 </motion.div>
             </div>
-        </div>
+        </SinglePlayerGameLayout>
     )
 } 

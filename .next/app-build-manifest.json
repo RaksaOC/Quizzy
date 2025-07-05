@@ -16,25 +16,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/games/layout.js"
     ],
-    "/games/quiz/page": [
+    "/games/character/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/games/quiz/page.js"
+      "static/chunks/app/games/character/page.js"
+    ],
+    "/games/memory/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/games/memory/page.js"
+    ],
+    "/games/drawing/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/games/drawing/page.js"
     ],
     "/games/digital-literacy/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/games/digital-literacy/page.js"
-    ],
-    "/games/math/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/math/page.js"
-    ],
-    "/games/character/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/character/page.js"
     ]
   }
 }

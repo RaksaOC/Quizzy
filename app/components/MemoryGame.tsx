@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Star, Trophy, RotateCcw } from 'lucide-react'
+import { SinglePlayerGameLayout } from './shared/GameLayout'
 
 interface MemoryGameProps {
     onBack: () => void
@@ -99,93 +100,107 @@ export default function MemoryGame({ onBack }: MemoryGameProps) {
 
     if (gameCompleted) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center p-4">
-                <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.8, type: "spring" }}
-                    className="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl"
-                >
+            <SinglePlayerGameLayout
+                title="Memory Master"
+                onBack={onBack}
+                gradientColors={{
+                    from: 'green-400',
+                    via: 'emerald-500',
+                    to: 'blue-500',
+                    overlayFrom: 'emerald-400',
+                    overlayVia: 'green-500',
+                    overlayTo: 'teal-500'
+                }}
+            >
+                <div className="flex items-center justify-center p-4">
                     <motion.div
-                        animate={{
-                            rotate: [0, 10, -10, 0],
-                            scale: [1, 1.2, 1]
-                        }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="text-6xl mb-4"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.8, type: "spring" }}
+                        className="bg-white/20 backdrop-blur-sm rounded-3xl p-8 max-w-md w-full text-center shadow-2xl border-2 border-white/20"
                     >
-                        🎉
-                    </motion.div>
+                        <motion.div
+                            animate={{
+                                rotate: [0, 10, -10, 0],
+                                scale: [1, 1.2, 1]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="text-6xl mb-4"
+                        >
+                            🎉
+                        </motion.div>
 
-                    <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                        Memory Master!
-                    </h2>
+                        <h2 className="text-3xl font-bold text-white mb-4">
+                            Memory Master!
+                        </h2>
 
-                    <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full px-6 py-3 mb-6">
-                        <div className="flex items-center justify-center gap-2">
-                            <Trophy className="w-6 h-6 text-white" />
-                            <span className="text-white font-bold text-xl">
-                                Final Score: {score}
+                        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full px-6 py-3 mb-6">
+                            <div className="flex items-center justify-center gap-2">
+                                <Trophy className="w-6 h-6 text-white" />
+                                <span className="text-white font-bold text-xl">
+                                    Final Score: {score}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-6">
+                            <span className="text-white font-bold">
+                                Moves: {moves}
                             </span>
                         </div>
-                    </div>
 
-                    <div className="bg-blue-100 rounded-full px-6 py-3 mb-6">
-                        <span className="text-blue-800 font-bold">
-                            Moves: {moves}
-                        </span>
-                    </div>
+                        <p className="text-white/90 mb-6">
+                            {moves <= 12 ? "Amazing! You have an incredible memory! 🧠" :
+                                moves <= 20 ? "Great job! You're getting better! 🌟" :
+                                    "Well done! Keep practicing to improve! 💪"}
+                        </p>
 
-                    <p className="text-gray-600 mb-6">
-                        {moves <= 12 ? "Amazing! You have an incredible memory! 🧠" :
-                            moves <= 20 ? "Great job! You're getting better! 🌟" :
-                                "Well done! Keep practicing to improve! 💪"}
-                    </p>
+                        <div className="space-y-3">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handlePlayAgain}
+                                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all"
+                            >
+                                Play Again! 🎮
+                            </motion.button>
 
-                    <div className="space-y-3">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={handlePlayAgain}
-                            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all"
-                        >
-                            Play Again! 🎮
-                        </motion.button>
-
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={onBack}
-                            className="w-full bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-full hover:bg-gray-300 transition-all"
-                        >
-                            Back to Menu 🏠
-                        </motion.button>
-                    </div>
-                </motion.div>
-            </div>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={onBack}
+                                className="w-full bg-white/20 backdrop-blur-sm text-white font-bold py-3 px-6 rounded-full hover:bg-white/30 transition-all"
+                            >
+                                Back to Menu 🏠
+                            </motion.button>
+                        </div>
+                    </motion.div>
+                </div>
+            </SinglePlayerGameLayout>
         )
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-400 to-purple-500 p-4">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={onBack}
-                        className="flex items-center gap-2 text-white font-bold text-lg hover:bg-white/20 rounded-full px-4 py-2 transition-all"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Menu
-                    </motion.button>
-
+        <SinglePlayerGameLayout
+            title="Memory Match"
+            onBack={onBack}
+            gradientColors={{
+                from: 'pink-400',
+                via: 'purple-500',
+                to: 'indigo-600',
+                overlayFrom: 'rose-400',
+                overlayVia: 'pink-500',
+                overlayTo: 'purple-500'
+            }}
+        >
+            <div className="max-w-4xl mx-auto space-y-8">
+                {/* Game Controls */}
+                <div className="flex justify-end">
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={handlePlayAgain}
-                        className="flex items-center gap-2 text-white font-bold text-lg hover:bg-white/20 rounded-full px-4 py-2 transition-all"
+                        className="flex items-center gap-2 text-white font-bold text-lg bg-purple-500/80 hover:bg-purple-500 rounded-full px-4 py-2 transition-all"
                     >
                         <RotateCcw className="w-5 h-5" />
                         New Game
@@ -193,24 +208,21 @@ export default function MemoryGame({ onBack }: MemoryGameProps) {
                 </div>
 
                 {/* Game Stats */}
-                <div className="flex justify-center gap-8 mb-8">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
+                <div className="flex justify-center gap-8">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border-2 border-white/20">
                         <div className="flex items-center gap-2">
                             <Star className="text-yellow-300 w-5 h-5" />
                             <span className="text-white font-bold">Score: {score}</span>
                         </div>
                     </div>
 
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border-2 border-white/20">
                         <span className="text-white font-bold">Moves: {moves}</span>
                     </div>
                 </div>
 
                 {/* Game Instructions */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-white mb-4">
-                        🧠 Memory Match 🧠
-                    </h1>
+                <div className="text-center">
                     <p className="text-white/90 text-lg">
                         Find matching pairs of cards! Click on cards to flip them.
                     </p>
@@ -225,15 +237,15 @@ export default function MemoryGame({ onBack }: MemoryGameProps) {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleCardClick(card.id)}
                             className={`
-                aspect-square rounded-2xl cursor-pointer relative overflow-hidden
-                ${card.isMatched
-                                    ? 'bg-gradient-to-br from-green-400 to-green-500 shadow-lg'
+                                aspect-square rounded-2xl cursor-pointer relative overflow-hidden
+                                ${card.isMatched
+                                    ? 'bg-gradient-to-br from-green-400 to-green-500 shadow-lg border-2 border-white/20'
                                     : card.isFlipped
                                         ? 'bg-white shadow-lg'
-                                        : 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg hover:shadow-xl'
+                                        : 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg hover:shadow-xl border-2 border-white/20'
                                 }
-                transition-all duration-300
-              `}
+                                transition-all duration-300
+                            `}
                         >
                             <AnimatePresence mode="wait">
                                 {card.isFlipped || card.isMatched ? (
@@ -260,36 +272,10 @@ export default function MemoryGame({ onBack }: MemoryGameProps) {
                                     </motion.div>
                                 )}
                             </AnimatePresence>
-
-                            {/* Match indicator */}
-                            {card.isMatched && (
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="absolute top-2 right-2 text-2xl"
-                                >
-                                    ✅
-                                </motion.div>
-                            )}
                         </motion.div>
                     ))}
                 </div>
-
-                {/* Progress indicator */}
-                <div className="text-center mt-8">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-1 max-w-md mx-auto">
-                        <motion.div
-                            className="bg-gradient-to-r from-green-400 to-blue-500 h-4 rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${(cards.filter(card => card.isMatched).length / cards.length) * 100}%` }}
-                            transition={{ duration: 0.5 }}
-                        />
-                    </div>
-                    <p className="text-white/90 mt-2">
-                        {cards.filter(card => card.isMatched).length / 2} of {cards.length / 2} pairs found
-                    </p>
-                </div>
             </div>
-        </div>
+        </SinglePlayerGameLayout>
     )
 } 
