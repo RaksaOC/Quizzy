@@ -6,7 +6,6 @@ import { ArrowLeft, Trash2, Brush, Eraser } from 'lucide-react'
 
 interface DrawingGameProps {
     onBack: () => void
-    onScoreUpdate: (points: number) => void
 }
 
 const colors = [
@@ -15,7 +14,7 @@ const colors = [
     '#000000', '#FFFFFF'
 ]
 
-export default function DrawingGame({ onBack, onScoreUpdate }: DrawingGameProps) {
+export default function DrawingGame({ onBack }: DrawingGameProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const contextRef = useRef<CanvasRenderingContext2D | null>(null)
     const [isDrawing, setIsDrawing] = useState(false)
@@ -76,8 +75,6 @@ export default function DrawingGame({ onBack, onScoreUpdate }: DrawingGameProps)
         if (canvas && context) {
             context.clearRect(0, 0, canvas.width, canvas.height)
         }
-        // Award points for creating art!
-        onScoreUpdate(5)
     }
 
     const handleColorChange = (color: string) => {

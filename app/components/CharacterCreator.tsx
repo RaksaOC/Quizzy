@@ -6,7 +6,6 @@ import { ArrowLeft, Wand2, RefreshCw } from 'lucide-react'
 
 interface CharacterCreatorProps {
     onBack: () => void
-    onScoreUpdate: (points: number) => void
 }
 
 // Simple parts for the character
@@ -15,7 +14,7 @@ const eyes = ['👀', '😊', '😎', '😮', '😑']
 const mouths = ['😀', '🙂', '😋', '😗', '😐']
 const accessories = ['👑', '🎩', '🧢', '🎀', '👓']
 
-export default function CharacterCreator({ onBack, onScoreUpdate }: CharacterCreatorProps) {
+export default function CharacterCreator({ onBack }: CharacterCreatorProps) {
     const [bodyIndex, setBodyIndex] = useState(0)
     const [eyesIndex, setEyesIndex] = useState(0)
     const [mouthIndex, setMouthIndex] = useState(0)
@@ -26,7 +25,6 @@ export default function CharacterCreator({ onBack, onScoreUpdate }: CharacterCre
         setEyesIndex(Math.floor(Math.random() * eyes.length))
         setMouthIndex(Math.floor(Math.random() * mouths.length))
         setAccessoryIndex(Math.floor(Math.random() * accessories.length))
-        onScoreUpdate(2) // Give a small reward for randomizing
     }
 
     const cycleOption = (setter: React.Dispatch<React.SetStateAction<number>>, length: number) => {
@@ -34,7 +32,6 @@ export default function CharacterCreator({ onBack, onScoreUpdate }: CharacterCre
     }
 
     const handleDone = () => {
-        onScoreUpdate(10) // Award points for creating a character
         onBack()
     }
 

@@ -6,7 +6,6 @@ import { ArrowLeft, Star, Trophy, RotateCcw } from 'lucide-react'
 
 interface MemoryGameProps {
     onBack: () => void
-    onScoreUpdate: (points: number) => void
 }
 
 interface Card {
@@ -18,7 +17,7 @@ interface Card {
 
 const emojis = ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐵', '🐷', '🐮', '🐷']
 
-export default function MemoryGame({ onBack, onScoreUpdate }: MemoryGameProps) {
+export default function MemoryGame({ onBack }: MemoryGameProps) {
     const [cards, setCards] = useState<Card[]>([])
     const [flippedCards, setFlippedCards] = useState<number[]>([])
     const [moves, setMoves] = useState(0)
@@ -74,7 +73,6 @@ export default function MemoryGame({ onBack, onScoreUpdate }: MemoryGameProps) {
                 newCards[secondId].isMatched = true
                 setCards(newCards)
                 setScore(prev => prev + 20)
-                onScoreUpdate(20)
                 setFlippedCards([])
                 setIsProcessing(false)
 

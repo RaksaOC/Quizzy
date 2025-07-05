@@ -2,704 +2,414 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, CheckCircle, XCircle, Star, Trophy, TestTube } from 'lucide-react'
+import { Microscope, Star, CheckCircle, XCircle } from 'lucide-react'
+import { useGameState } from '../hooks/useGameState'
+import GameLayout from './shared/GameLayout'
+import PlayerSetup from './shared/PlayerSetup'
+import GameResults from './shared/GameResults'
 
 interface ScienceGameProps {
     onBack: () => void
-    onScoreUpdate: (points: number) => void
 }
 
 interface Question {
     id: number
     question: string
     options: string[]
-    correctAnswer: number
-    category: string
-    emoji: string
-    difficulty: string
+    correctAnswer: string
+    explanation: string
+    type: 'biology' | 'chemistry' | 'physics' | 'earth' | 'space'
+    imageUrl?: string
 }
 
-const questions: Question[] = [
-    // Space & Planets
-    {
-        id: 1,
-        question: "What planet do we live on?",
-        options: ["Mars", "Earth", "Venus", "Jupiter"],
-        correctAnswer: 1,
-        category: "Space",
-        emoji: "🌍",
-        difficulty: "Easy"
-    },
-    {
-        id: 2,
-        question: "What is the closest star to Earth?",
-        options: ["Moon", "Sun", "Mars", "Venus"],
-        correctAnswer: 1,
-        category: "Space",
-        emoji: "☀️",
-        difficulty: "Easy"
-    },
-    {
-        id: 3,
-        question: "What do we call the big ball of light in the sky at night?",
-        options: ["Star", "Moon", "Planet", "Sun"],
-        correctAnswer: 1,
-        category: "Space",
-        emoji: "🌙",
-        difficulty: "Easy"
-    },
-    {
-        id: 4,
-        question: "How many planets are in our solar system?",
-        options: ["7", "8", "9", "10"],
-        correctAnswer: 1,
-        category: "Space",
-        emoji: "🪐",
-        difficulty: "Medium"
-    },
-    {
-        id: 5,
-        question: "What color is the sky during the day?",
-        options: ["Red", "Blue", "Green", "Yellow"],
-        correctAnswer: 1,
-        category: "Space",
-        emoji: "🌤️",
-        difficulty: "Easy"
-    },
+const generateQuestions = (): Question[] => {
+    const questions: Question[] = [
+        {
+            id: 1,
+            type: 'biology',
+            question: "What do plants need to grow?",
+            options: ["Sunlight and water", "Ice cream", "Television", "Video games"],
+            correctAnswer: "Sunlight and water",
+            explanation: "Plants need sunlight and water to make their own food through a process called photosynthesis! 🌱"
+        },
+        {
+            id: 2,
+            type: 'biology',
+            question: "Which animal lays eggs?",
+            options: ["Chicken", "Dog", "Cat", "Cow"],
+            correctAnswer: "Chicken",
+            explanation: "Chickens lay eggs! Many birds, reptiles, and some other animals lay eggs too. 🥚"
+        },
+        {
+            id: 3,
+            type: 'chemistry',
+            question: "What happens to water when it gets very cold?",
+            options: ["It turns to ice", "It disappears", "It turns to juice", "It becomes hot"],
+            correctAnswer: "It turns to ice",
+            explanation: "When water gets very cold (below 0°C or 32°F), it freezes and becomes ice! ❄️"
+        },
+        {
+            id: 4,
+            type: 'physics',
+            question: "What makes things fall down?",
+            options: ["Gravity", "Wind", "Magic", "Music"],
+            correctAnswer: "Gravity",
+            explanation: "Gravity is a force that pulls everything toward Earth. That's why things fall down! 🌍"
+        },
+        {
+            id: 5,
+            type: 'physics',
+            question: "What makes rainbows appear?",
+            options: ["Sunlight and rain", "Magic wands", "Paint", "Crayons"],
+            correctAnswer: "Sunlight and rain",
+            explanation: "Rainbows appear when sunlight shines through water droplets in the air! 🌈"
+        },
+        {
+            id: 6,
+            type: 'space',
+            question: "What is the closest star to Earth?",
+            options: ["The Sun", "The Moon", "Mars", "Jupiter"],
+            correctAnswer: "The Sun",
+            explanation: "The Sun is our closest star! It gives us light and heat every day. ☀️"
+        },
+        {
+            id: 7,
+            type: 'biology',
+            question: "Which body part helps us breathe?",
+            options: ["Lungs", "Stomach", "Feet", "Hair"],
+            correctAnswer: "Lungs",
+            explanation: "Our lungs help us breathe! They take in oxygen from the air and help remove carbon dioxide. 🫁"
+        },
+        {
+            id: 8,
+            type: 'chemistry',
+            question: "What gas do we need to live?",
+            options: ["Oxygen", "Chocolate", "Sugar", "Salt"],
+            correctAnswer: "Oxygen",
+            explanation: "We need oxygen to live! It's an important gas in the air we breathe. 💨"
+        },
+        {
+            id: 9,
+            type: 'space',
+            question: "What gives us light during the day?",
+            options: ["The Sun", "The Moon", "Light bulbs", "Stars"],
+            correctAnswer: "The Sun",
+            explanation: "The Sun gives us light and warmth during the day! ☀️"
+        },
+        {
+            id: 10,
+            type: 'earth',
+            question: "What covers most of Earth?",
+            options: ["Water", "Sand", "Rocks", "Trees"],
+            correctAnswer: "Water",
+            explanation: "Most of Earth is covered by water in our oceans! 🌊"
+        },
+        {
+            id: 11,
+            type: 'space',
+            question: "What orbits around Earth?",
+            options: ["The Moon", "The Sun", "Stars", "Clouds"],
+            correctAnswer: "The Moon",
+            explanation: "The Moon is Earth's only natural satellite! It orbits around our planet. 🌙"
+        },
+        {
+            id: 12,
+            type: 'biology',
+            question: "What do baby animals need to grow?",
+            options: ["Food and care", "Toys", "Books", "Phones"],
+            correctAnswer: "Food and care",
+            explanation: "Like human babies, baby animals need food and care from their parents to grow healthy! 🐣"
+        },
+        {
+            id: 13,
+            type: 'chemistry',
+            question: "What happens to ice cream in the sun?",
+            options: ["It melts", "It grows", "It jumps", "It sings"],
+            correctAnswer: "It melts",
+            explanation: "Ice cream melts when it gets warm! This is called a state change from solid to liquid. 🍦"
+        },
+        {
+            id: 14,
+            type: 'physics',
+            question: "Why do boats float on water?",
+            options: ["Water pushing up", "Magic", "Wings", "Wheels"],
+            correctAnswer: "Water pushing up",
+            explanation: "Boats float because water pushes up on them! This force is called buoyancy. ⛵"
+        },
+        {
+            id: 15,
+            type: 'earth',
+            question: "What are clouds made of?",
+            options: ["Water vapor", "Cotton", "Smoke", "Paint"],
+            correctAnswer: "Water vapor",
+            explanation: "Clouds form when water vapor in the air cools and forms tiny water droplets! ☁️"
+        }
+    ]
 
-    // Plants & Nature
-    {
-        id: 6,
-        question: "What do plants need to make their own food?",
-        options: ["Water", "Sunlight", "Soil", "All of these"],
-        correctAnswer: 3,
-        category: "Plants",
-        emoji: "🌱",
-        difficulty: "Medium"
-    },
-    {
-        id: 7,
-        question: "What part of the plant takes in water from the soil?",
-        options: ["Leaves", "Stem", "Roots", "Flowers"],
-        correctAnswer: 2,
-        category: "Plants",
-        emoji: "🌿",
-        difficulty: "Medium"
-    },
-    {
-        id: 8,
-        question: "What do bees help plants do?",
-        options: ["Grow taller", "Make seeds", "Change color", "Make fruit"],
-        correctAnswer: 1,
-        category: "Plants",
-        emoji: "🐝",
-        difficulty: "Medium"
-    },
-    {
-        id: 9,
-        question: "What season do most plants grow the fastest?",
-        options: ["Winter", "Spring", "Summer", "Fall"],
-        correctAnswer: 2,
-        category: "Plants",
-        emoji: "🌺",
-        difficulty: "Easy"
-    },
-    {
-        id: 10,
-        question: "What do trees give us to breathe?",
-        options: ["Water", "Oxygen", "Food", "Shade"],
-        correctAnswer: 1,
-        category: "Plants",
-        emoji: "🌳",
-        difficulty: "Medium"
-    },
+    return questions.sort(() => Math.random() - 0.5)
+}
 
-    // Weather & Climate
-    {
-        id: 11,
-        question: "What happens when water gets very cold?",
-        options: ["It boils", "It freezes", "It disappears", "It changes color"],
-        correctAnswer: 1,
-        category: "Weather",
-        emoji: "❄️",
-        difficulty: "Easy"
-    },
-    {
-        id: 12,
-        question: "What do we call water that falls from the sky?",
-        options: ["Snow", "Rain", "Hail", "All of these"],
-        correctAnswer: 3,
-        category: "Weather",
-        emoji: "🌧️",
-        difficulty: "Easy"
-    },
-    {
-        id: 13,
-        question: "What makes a rainbow appear?",
-        options: ["Rain and sun", "Snow and wind", "Clouds and rain", "Wind and sun"],
-        correctAnswer: 0,
-        category: "Weather",
-        emoji: "🌈",
-        difficulty: "Medium"
-    },
-    {
-        id: 14,
-        question: "What do we call the movement of air?",
-        options: ["Rain", "Wind", "Snow", "Lightning"],
-        correctAnswer: 1,
-        category: "Weather",
-        emoji: "💨",
-        difficulty: "Easy"
-    },
-    {
-        id: 15,
-        question: "What season comes after winter?",
-        options: ["Spring", "Summer", "Fall", "Winter again"],
-        correctAnswer: 0,
-        category: "Weather",
-        emoji: "🌸",
-        difficulty: "Easy"
-    },
+export default function ScienceGame({ onBack }: ScienceGameProps) {
+    const [questions] = useState(generateQuestions())
+    const [showSetup, setShowSetup] = useState(true)
+    const [showExplanation, setShowExplanation] = useState(false)
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
+    const [showForfeitModal, setShowForfeitModal] = useState(false)
+    const [usedQuestions] = useState(new Set<number>())
 
-    // Human Body
-    {
-        id: 16,
-        question: "What pumps blood through your body?",
-        options: ["Lungs", "Heart", "Brain", "Stomach"],
-        correctAnswer: 1,
-        category: "Body",
-        emoji: "❤️",
-        difficulty: "Medium"
-    },
-    {
-        id: 17,
-        question: "What do you use to think and learn?",
-        options: ["Heart", "Brain", "Lungs", "Stomach"],
-        correctAnswer: 1,
-        category: "Body",
-        emoji: "🧠",
-        difficulty: "Easy"
-    },
-    {
-        id: 18,
-        question: "What do your lungs help you do?",
-        options: ["Eat", "Breathe", "Walk", "Sleep"],
-        correctAnswer: 1,
-        category: "Body",
-        emoji: "🫁",
-        difficulty: "Medium"
-    },
-    {
-        id: 19,
-        question: "What do your bones help you do?",
-        options: ["Think", "Stand up", "Breathe", "Eat"],
-        correctAnswer: 1,
-        category: "Body",
-        emoji: "🦴",
-        difficulty: "Easy"
-    },
-    {
-        id: 20,
-        question: "What do your muscles help you do?",
-        options: ["Move", "Think", "Breathe", "Eat"],
-        correctAnswer: 0,
-        category: "Body",
-        emoji: "💪",
-        difficulty: "Easy"
-    },
-
-    // Energy & Forces
-    {
-        id: 21,
-        question: "What do we call the force that pulls things down?",
-        options: ["Wind", "Gravity", "Electricity", "Magnetism"],
-        correctAnswer: 1,
-        category: "Forces",
-        emoji: "⬇️",
-        difficulty: "Medium"
-    },
-    {
-        id: 22,
-        question: "What do we call the energy that makes things hot?",
-        options: ["Light", "Heat", "Sound", "Electricity"],
-        correctAnswer: 1,
-        category: "Forces",
-        emoji: "🔥",
-        difficulty: "Easy"
-    },
-    {
-        id: 23,
-        question: "What do we call the energy that helps us see?",
-        options: ["Heat", "Light", "Sound", "Electricity"],
-        correctAnswer: 1,
-        category: "Forces",
-        emoji: "💡",
-        difficulty: "Easy"
-    },
-    {
-        id: 24,
-        question: "What do magnets attract?",
-        options: ["Paper", "Metal", "Wood", "Plastic"],
-        correctAnswer: 1,
-        category: "Forces",
-        emoji: "🧲",
-        difficulty: "Medium"
-    },
-    {
-        id: 25,
-        question: "What do we call the energy that makes sound?",
-        options: ["Light", "Heat", "Sound", "Electricity"],
-        correctAnswer: 2,
-        category: "Forces",
-        emoji: "🔊",
-        difficulty: "Easy"
-    },
-
-    // Materials & Matter
-    {
-        id: 26,
-        question: "What state of matter is water when it's frozen?",
-        options: ["Liquid", "Solid", "Gas", "Plasma"],
-        correctAnswer: 1,
-        category: "Matter",
-        emoji: "🧊",
-        difficulty: "Medium"
-    },
-    {
-        id: 27,
-        question: "What state of matter is steam?",
-        options: ["Liquid", "Solid", "Gas", "Plasma"],
-        correctAnswer: 2,
-        category: "Matter",
-        emoji: "💨",
-        difficulty: "Medium"
-    },
-    {
-        id: 28,
-        question: "What do we call things that can dissolve in water?",
-        options: ["Solids", "Liquids", "Soluble", "Insoluble"],
-        correctAnswer: 2,
-        category: "Matter",
-        emoji: "🧪",
-        difficulty: "Hard"
-    },
-    {
-        id: 29,
-        question: "What happens when you mix oil and water?",
-        options: ["They mix together", "They separate", "They disappear", "They change color"],
-        correctAnswer: 1,
-        category: "Matter",
-        emoji: "🫧",
-        difficulty: "Medium"
-    },
-    {
-        id: 30,
-        question: "What do we call the smallest part of matter?",
-        options: ["Cell", "Atom", "Molecule", "Particle"],
-        correctAnswer: 1,
-        category: "Matter",
-        emoji: "⚛️",
-        difficulty: "Hard"
-    },
-
-    // Simple Machines
-    {
-        id: 31,
-        question: "What simple machine helps you lift heavy things?",
-        options: ["Wheel", "Lever", "Pulley", "All of these"],
-        correctAnswer: 3,
-        category: "Machines",
-        emoji: "⚙️",
-        difficulty: "Medium"
-    },
-    {
-        id: 32,
-        question: "What do wheels help us do?",
-        options: ["Move things easily", "Make things hot", "Make things cold", "Make things loud"],
-        correctAnswer: 0,
-        category: "Machines",
-        emoji: "🛞",
-        difficulty: "Easy"
-    },
-    {
-        id: 33,
-        question: "What do we call a surface that goes up and down?",
-        options: ["Wheel", "Lever", "Ramp", "Pulley"],
-        correctAnswer: 2,
-        category: "Machines",
-        emoji: "📐",
-        difficulty: "Medium"
-    },
-    {
-        id: 34,
-        question: "What simple machine is a door handle?",
-        options: ["Wheel", "Lever", "Pulley", "Screw"],
-        correctAnswer: 1,
-        category: "Machines",
-        emoji: "🚪",
-        difficulty: "Medium"
-    },
-    {
-        id: 35,
-        question: "What do we call a tool that makes work easier?",
-        options: ["Machine", "Toy", "Game", "Book"],
-        correctAnswer: 0,
-        category: "Machines",
-        emoji: "🔧",
-        difficulty: "Easy"
+    const getNextQuestion = () => {
+        let availableQuestions = questions.filter(q => !usedQuestions.has(q.id))
+        if (availableQuestions.length === 0) {
+            // Reset if all questions have been used
+            usedQuestions.clear()
+            availableQuestions = questions
+        }
+        const question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)]
+        usedQuestions.add(question.id)
+        return question
     }
-]
 
-export default function ScienceGame({ onBack, onScoreUpdate }: ScienceGameProps) {
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
-    const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
-    const [score, setScore] = useState(0)
-    const [gameCompleted, setGameCompleted] = useState(false)
-    const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([])
+    const {
+        gameState,
+        initializePlayers,
+        handleAnswer,
+        isTimerRunning
+    } = useGameState({
+        initialRounds: questions.length,
+        timePerTurn: 20,
+        generateQuestion: getNextQuestion
+    })
 
     useEffect(() => {
-        // Shuffle questions on component mount
-        setShuffledQuestions([...questions].sort(() => Math.random() - 0.5))
-    }, [])
+        setShowExplanation(false)
+        setSelectedAnswer(null)
+    }, [gameState.currentPlayerIndex, gameState.currentRound])
 
-    const currentQuestion = shuffledQuestions[currentQuestionIndex]
+    const handlePlayerSetup = (
+        player1Name: string,
+        player1Avatar: string,
+        player2Name: string,
+        player2Avatar: string
+    ) => {
+        initializePlayers(player1Name, player1Avatar, player2Name, player2Avatar)
+        setShowSetup(false)
+    }
 
-    const handleAnswerSelect = (answerIndex: number) => {
-        if (selectedAnswer !== null) return // Prevent multiple selections
-
-        setSelectedAnswer(answerIndex)
-        const correct = answerIndex === currentQuestion.correctAnswer
-
-        setIsCorrect(correct)
-
-        if (correct) {
-            setScore(prev => prev + 10)
-            onScoreUpdate(10)
+    const handleAnswerSelect = (answer: string) => {
+        if (gameState.hasAnswered[gameState.currentPlayerIndex] || showExplanation) {
+            return
         }
 
-        // Show result for 2 seconds then move to next question
+        setSelectedAnswer(answer)
+        const isCorrect = answer === gameState.currentQuestion.correctAnswer
+        const timeBonus = Math.round((gameState.timeLeft / 20) * 10) // More points for faster answers
+
+        setShowExplanation(true)
+
         setTimeout(() => {
-            if (currentQuestionIndex < shuffledQuestions.length - 1) {
-                setCurrentQuestionIndex(prev => prev + 1)
-                setSelectedAnswer(null)
-                setIsCorrect(null)
-            } else {
-                setGameCompleted(true)
-            }
+            handleAnswer(gameState.currentPlayerIndex, isCorrect, timeBonus)
         }, 2000)
     }
 
-    const handlePlayAgain = () => {
-        setCurrentQuestionIndex(0)
-        setSelectedAnswer(null)
-        setIsCorrect(null)
-        setScore(0)
-        setGameCompleted(false)
-        setShuffledQuestions([...questions].sort(() => Math.random() - 0.5))
+    const handleForfeit = () => {
+        setShowForfeitModal(true)
     }
 
-    const getEmoji = (isCorrect: boolean | null) => {
-        if (isCorrect === null) return "🔬"
-        return isCorrect ? "🎉" : "😅"
+    if (showSetup) {
+        return <PlayerSetup onComplete={handlePlayerSetup} />
     }
 
-    const getCategoryColor = (category: string) => {
-        switch (category) {
-            case 'Space': return 'from-purple-500 to-indigo-600'
-            case 'Plants': return 'from-green-500 to-emerald-600'
-            case 'Weather': return 'from-blue-500 to-cyan-600'
-            case 'Body': return 'from-pink-500 to-rose-600'
-            case 'Forces': return 'from-orange-500 to-red-600'
-            case 'Matter': return 'from-teal-500 to-blue-600'
-            case 'Machines': return 'from-gray-500 to-slate-600'
-            default: return 'from-gray-500 to-gray-600'
-        }
-    }
+    if (gameState.isGameOver || showForfeitModal) {
+        const winner = gameState.players[0].score > gameState.players[1].score
+            ? gameState.players[0]
+            : gameState.players[1]
+        const loser = winner === gameState.players[0]
+            ? gameState.players[1]
+            : gameState.players[0]
 
-    if (gameCompleted) {
         return (
-            <div className="min-h-screen relative overflow-hidden">
-                {/* Animated Background */}
-                <div className="fixed inset-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400 via-pink-500 to-red-600"></div>
-                    <div className="absolute inset-0 bg-gradient-to-tl from-indigo-400 via-purple-500 to-pink-500 opacity-30"></div>
-                </div>
+            <GameResults
+                winner={winner}
+                loser={loser}
+                onPlayAgain={() => window.location.reload()}
+                onBack={onBack}
+                forfeit={showForfeitModal}
+            />
+        )
+    }
 
-                {/* Floating Elements */}
-                <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                    {[...Array(15)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="bubble absolute"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                width: `${Math.random() * 80 + 40}px`,
-                                height: `${Math.random() * 80 + 40}px`,
-                                borderRadius: Math.random() > 0.5 ? '50%' : '20px',
-                            }}
-                            animate={{
-                                y: [0, -100, 0],
-                                x: [0, Math.random() * 60 - 30, 0],
-                                rotate: [0, Math.random() > 0.5 ? 360 : -360, 0],
-                                scale: [1, 1.2, 1],
-                            }}
-                            transition={{
-                                duration: Math.random() * 15 + 10,
-                                repeat: Infinity,
-                                ease: "linear"
-                            }}
-                        />
-                    ))}
-                </div>
+    const currentPlayer = gameState.players[gameState.currentPlayerIndex]
+    const currentQuestion = gameState.currentQuestion
+    const timeLeftPercentage = (gameState.timeLeft / 20) * 100
 
-                <div className="relative z-10 flex items-center justify-center p-4 min-h-screen">
+    return (
+        <GameLayout
+            title="Science Explorer"
+            players={gameState.players}
+            currentPlayerIndex={gameState.currentPlayerIndex}
+            timeLeft={gameState.timeLeft}
+            currentRound={gameState.currentRound}
+            totalRounds={gameState.totalRounds}
+            onBack={onBack}
+            gradientColors={{
+                from: 'green-400',
+                via: 'emerald-500',
+                to: 'teal-500',
+                overlayFrom: 'green-300',
+                overlayVia: 'emerald-400',
+                overlayTo: 'teal-400'
+            }}
+        >
+            <div className="space-y-8">
+                {/* Player Turn and Score */}
+                <div className="flex justify-between items-center">
                     <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.8, type: "spring" }}
-                        className="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="text-center"
                     >
-                        <motion.div
-                            animate={{
-                                rotate: [0, 10, -10, 0],
-                                scale: [1, 1.2, 1]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="text-6xl mb-4"
-                        >
-                            <TestTube className="w-12 h-12 text-white" />
-                        </motion.div>
+                        <h3 className="text-xl text-white font-medium">
+                            {currentPlayer.name}'s Turn
+                        </h3>
+                    </motion.div>
 
-                        <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                            Science Explorer!
-                        </h2>
-
-                        <div className="bg-gradient-to-r from-purple-400 to-pink-500 rounded-full px-6 py-3 mb-6">
-                            <div className="flex items-center justify-center gap-2">
-                                <Trophy className="w-6 h-6 text-white" />
-                                <span className="text-white font-bold text-xl">
-                                    Final Score: {score}/{questions.length * 10}
-                                </span>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-600 mb-6">
-                            {score === questions.length * 10
-                                ? "Perfect! You're a science genius! 🧠"
-                                : `Amazing! You got ${score / 10} out of ${questions.length} questions right!`}
-                        </p>
-
-                        <div className="space-y-3">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={handlePlayAgain}
-                                className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all"
-                            >
-                                Play Again! 🎮
-                            </motion.button>
-
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={onBack}
-                                className="w-full bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-full hover:bg-gray-300 transition-all"
-                            >
-                                Back to Menu 🏠
-                            </motion.button>
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full"
+                    >
+                        <div className="flex items-center gap-2">
+                            <Star className="w-5 h-5 text-yellow-300" />
+                            <span className="text-white font-bold">Score: {currentPlayer.score}</span>
                         </div>
                     </motion.div>
                 </div>
-            </div>
-        )
-    }
 
-    if (shuffledQuestions.length === 0) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
-                <div className="text-white text-2xl">Loading...</div>
-            </div>
-        )
-    }
-
-    return (
-        <div className="min-h-screen relative overflow-hidden">
-            {/* Animated Background */}
-            <div className="fixed inset-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-400 via-pink-500 to-red-600"></div>
-                <div className="absolute inset-0 bg-gradient-to-tl from-indigo-400 via-purple-500 to-pink-500 opacity-30"></div>
-            </div>
-
-            {/* Floating Elements */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                {[...Array(15)].map((_, i) => (
+                {/* Timer Bar */}
+                <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
                     <motion.div
-                        key={i}
-                        className="bubble absolute"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            width: `${Math.random() * 80 + 40}px`,
-                            height: `${Math.random() * 80 + 40}px`,
-                            borderRadius: Math.random() > 0.5 ? '50%' : '20px',
-                        }}
-                        animate={{
-                            y: [0, -100, 0],
-                            x: [0, Math.random() * 60 - 30, 0],
-                            rotate: [0, Math.random() > 0.5 ? 360 : -360, 0],
-                            scale: [1, 1.2, 1],
-                        }}
-                        transition={{
-                            duration: Math.random() * 15 + 10,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
+                        initial={{ width: '100%' }}
+                        animate={{ width: `${timeLeftPercentage}%` }}
+                        transition={{ duration: 0.5 }}
+                        className={`h-full transition-colors ${timeLeftPercentage > 50 ? 'bg-green-500' :
+                            timeLeftPercentage > 25 ? 'bg-yellow-500' :
+                                'bg-red-500'
+                            }`}
                     />
-                ))}
-            </div>
+                </div>
 
-            <div className="relative z-10 p-4">
-                <div className="max-w-4xl mx-auto">
-                    {/* Header */}
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={onBack}
-                        className="flex items-center gap-2 text-white font-bold text-lg mb-6 hover:bg-white/20 rounded-full px-4 py-2 transition-all"
+                {/* Question Card */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={`${gameState.currentRound}-${gameState.currentPlayerIndex}`}
+                        initial={{ x: 300, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -300, opacity: 0 }}
+                        className="text-center"
                     >
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Menu
-                    </motion.button>
+                        {/* Question */}
+                        <div className="mb-8">
+                            {currentQuestion.imageUrl && (
+                                <div className="relative rounded-2xl overflow-hidden bg-emerald-500/90 backdrop-blur-sm aspect-video max-w-2xl mx-auto mb-6 border-2 border-white/20 shadow-lg">
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="text-white/90 text-center p-8">
+                                            <Microscope className="w-16 h-16 mx-auto mb-4" />
+                                            <span className="text-xl font-medium">Round {gameState.currentRound}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
-                    {/* Progress Bar */}
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-1 mb-8">
-                        <motion.div
-                            className="bg-gradient-to-r from-purple-400 to-pink-500 h-4 rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${((currentQuestionIndex + 1) / shuffledQuestions.length) * 100}%` }}
-                            transition={{ duration: 0.5 }}
-                        />
-                    </div>
-
-                    {/* Score Display */}
-                    <div className="flex justify-between items-center mb-8">
-                        <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
-                            <div className="flex items-center gap-2">
-                                <Star className="text-yellow-300 w-5 h-5" />
-                                <span className="text-white font-bold">Score: {score}</span>
-                            </div>
+                            <h3 className="text-3xl font-bold text-white mb-8 text-shadow-lg">
+                                {currentQuestion.question}
+                            </h3>
                         </div>
 
-                        <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
-                            <span className="text-white font-bold">
-                                Question {currentQuestionIndex + 1} of {shuffledQuestions.length}
-                            </span>
-                        </div>
-                    </div>
+                        {/* Options */}
+                        <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                            {currentQuestion.options.map((option: string, index: number) => {
+                                const isSelected = selectedAnswer === option
+                                const isCorrect = option === currentQuestion.correctAnswer
 
-                    {/* Question Card */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentQuestionIndex}
-                            initial={{ x: 300, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -300, opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="bg-white rounded-3xl p-8 shadow-2xl mb-8"
-                        >
-                            {/* Question Header */}
-                            <div className="text-center mb-6">
-                                <motion.div
-                                    animate={{
-                                        rotate: [0, 360],
-                                        scale: [1, 1.2, 1]
-                                    }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                    className="text-4xl mb-4"
-                                >
-                                    {currentQuestion.emoji}
-                                </motion.div>
-
-                                <div className={`bg-gradient-to-r ${getCategoryColor(currentQuestion.category)} text-white px-4 py-2 rounded-full inline-block mb-4`}>
-                                    <span className="font-bold">{currentQuestion.category}</span>
-                                </div>
-
-                                <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-full inline-block mb-4">
-                                    <span className="font-bold">{currentQuestion.difficulty}</span>
-                                </div>
-
-                                <h2 className="text-2xl font-bold text-gray-800 leading-relaxed">
-                                    {currentQuestion.question}
-                                </h2>
-                            </div>
-
-                            {/* Answer Options */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {currentQuestion.options.map((option, index) => (
+                                return (
                                     <motion.button
                                         key={index}
                                         whileHover={{
-                                            scale: selectedAnswer === null ? 1.05 : 1,
-                                            y: selectedAnswer === null ? -5 : 0
+                                            scale: !selectedAnswer ? 1.05 : 1,
+                                            y: !selectedAnswer ? -5 : 0
                                         }}
                                         whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleAnswerSelect(index)}
-                                        disabled={selectedAnswer !== null}
+                                        onClick={() => handleAnswerSelect(option)}
+                                        disabled={!!selectedAnswer}
                                         className={`
-                    relative p-6 rounded-2xl font-bold text-lg transition-all duration-300
-                    ${selectedAnswer === null
-                                                ? 'bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 text-gray-800 border-2 border-purple-200'
-                                                : selectedAnswer === index
-                                                    ? index === currentQuestion.correctAnswer
-                                                        ? 'bg-gradient-to-r from-green-400 to-green-500 text-white border-2 border-green-300'
-                                                        : 'bg-gradient-to-r from-red-400 to-red-500 text-white border-2 border-red-300'
-                                                    : index === currentQuestion.correctAnswer
-                                                        ? 'bg-gradient-to-r from-green-400 to-green-500 text-white border-2 border-green-300'
-                                                        : 'bg-gray-100 text-gray-500 border-2 border-gray-200'
+                                            relative p-6 rounded-xl text-left font-medium
+                                            ${!selectedAnswer
+                                                ? 'bg-emerald-500/80 text-white hover:bg-emerald-600/80 border-2 border-white/20'
+                                                : isSelected
+                                                    ? isCorrect
+                                                        ? 'bg-green-500/90 text-white border-2 border-green-400/50'
+                                                        : 'bg-red-500/90 text-white border-2 border-red-400/50'
+                                                    : isCorrect && showExplanation
+                                                        ? 'bg-green-500/90 text-white border-2 border-green-400/50'
+                                                        : 'bg-emerald-400/50 text-white/60 border-2 border-white/10'
                                             }
-                  `}
+                                            transition-all duration-300 shadow-lg
+                                        `}
                                     >
                                         <div className="flex items-center justify-between">
-                                            <span>{option}</span>
-                                            {selectedAnswer !== null && (
+                                            <span className="flex items-center gap-3 text-lg">
+                                                <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
+                                                    {String.fromCharCode(65 + index)}
+                                                </span>
+                                                {option}
+                                            </span>
+                                            {selectedAnswer && (
                                                 <motion.div
                                                     initial={{ scale: 0 }}
                                                     animate={{ scale: 1 }}
                                                     transition={{ duration: 0.3 }}
                                                 >
-                                                    {index === currentQuestion.correctAnswer ? (
+                                                    {isCorrect ? (
                                                         <CheckCircle className="w-6 h-6" />
-                                                    ) : selectedAnswer === index ? (
+                                                    ) : isSelected ? (
                                                         <XCircle className="w-6 h-6" />
                                                     ) : null}
                                                 </motion.div>
                                             )}
                                         </div>
                                     </motion.button>
-                                ))}
-                            </div>
+                                )
+                            })}
+                        </div>
 
-                            {/* Feedback */}
-                            {selectedAnswer !== null && (
+                        {/* Explanation */}
+                        <AnimatePresence>
+                            {showExplanation && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-center mt-6"
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="mt-8 p-6 bg-emerald-600/80 backdrop-blur-sm rounded-xl text-white border-2 border-white/20 shadow-lg"
                                 >
-                                    <div className="text-4xl mb-2">
-                                        {getEmoji(isCorrect)}
-                                    </div>
-                                    <p className={`text-lg font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                                        {isCorrect ? 'Correct! Well done! 🎉' : `Oops! The correct answer was "${currentQuestion.options[currentQuestion.correctAnswer]}"`}
+                                    <p className="text-xl font-medium">
+                                        {currentQuestion.explanation}
                                     </p>
                                 </motion.div>
                             )}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+                        </AnimatePresence>
+                    </motion.div>
+                </AnimatePresence>
+
+                {/* Forfeit Button */}
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleForfeit}
+                    className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-white/30 transition-all"
+                >
+                    Forfeit Game
+                </motion.button>
             </div>
-        </div>
+        </GameLayout>
     )
 } 
