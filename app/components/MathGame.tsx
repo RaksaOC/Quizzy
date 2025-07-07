@@ -1,139 +1,35 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Calculator, Star, CheckCircle, XCircle } from 'lucide-react'
 import { useGameState } from '../hooks/useGameState'
 import GameLayout from './shared/GameLayout'
 import PlayerSetup from './shared/PlayerSetup'
 import GameResults from './shared/GameResults'
+import {
+    generateMathQuestions,
+    calculateTimeBonus,
+    GAME_COLORS,
+    MathQuestion
+} from '../utils/gameData'
 
 interface MathGameProps {
     onBack: () => void
 }
 
-interface Question {
-    id: number
-    question: string
-    options: string[]
-    correctAnswer: string
-    explanation: string
-    type: 'addition' | 'subtraction' | 'multiplication' | 'division'
-    imageUrl?: string
-}
-
-const generateQuestions = (): Question[] => {
-    const questions: Question[] = []
-
-    // Addition questions
-    for (let i = 0; i < 5; i++) {
-        const num1 = Math.floor(Math.random() * 10) + 1
-        const num2 = Math.floor(Math.random() * 10) + 1
-        const sum = num1 + num2
-
-        const wrongAnswers = [
-            sum + 1,
-            sum - 1,
-            sum + 2
-        ].sort(() => Math.random() - 0.5)
-
-        questions.push({
-            id: i + 1,
-            type: 'addition',
-            question: `What is ${num1} + ${num2}?`,
-            options: [sum.toString(), ...wrongAnswers.map(n => n.toString())],
-            correctAnswer: sum.toString(),
-            explanation: `${num1} + ${num2} = ${sum}. When we add numbers, we combine them to get a bigger number!`
-        })
-    }
-
-    // Subtraction questions
-    for (let i = 0; i < 5; i++) {
-        const num1 = Math.floor(Math.random() * 10) + 5
-        const num2 = Math.floor(Math.random() * (num1 - 1)) + 1
-        const difference = num1 - num2
-
-        const wrongAnswers = [
-            difference + 1,
-            difference - 1,
-            difference + 2
-        ].sort(() => Math.random() - 0.5)
-
-        questions.push({
-            id: i + 6,
-            type: 'subtraction',
-            question: `What is ${num1} - ${num2}?`,
-            options: [difference.toString(), ...wrongAnswers.map(n => n.toString())],
-            correctAnswer: difference.toString(),
-            explanation: `${num1} - ${num2} = ${difference}. When we subtract, we take away numbers to find what's left!`
-        })
-    }
-
-    // Multiplication questions (simple ones)
-    for (let i = 0; i < 5; i++) {
-        const num1 = Math.floor(Math.random() * 5) + 1
-        const num2 = Math.floor(Math.random() * 5) + 1
-        const product = num1 * num2
-
-        const wrongAnswers = [
-            product + 1,
-            product - 1,
-            product + 2
-        ].sort(() => Math.random() - 0.5)
-
-        questions.push({
-            id: i + 11,
-            type: 'multiplication',
-            question: `What is ${num1} × ${num2}?`,
-            options: [product.toString(), ...wrongAnswers.map(n => n.toString())],
-            correctAnswer: product.toString(),
-            explanation: `${num1} × ${num2} = ${product}. Multiplication is like adding a number to itself many times!`
-        })
-    }
-
-    // Simple division questions (with whole number answers)
-    for (let i = 0; i < 5; i++) {
-        const divisor = Math.floor(Math.random() * 5) + 1
-        const quotient = Math.floor(Math.random() * 5) + 1
-        const dividend = divisor * quotient
-
-        const wrongAnswers = [
-            quotient + 1,
-            quotient - 1,
-            quotient + 2
-        ].sort(() => Math.random() - 0.5)
-
-        questions.push({
-            id: i + 16,
-            type: 'division',
-            question: `What is ${dividend} ÷ ${divisor}?`,
-            options: [quotient.toString(), ...wrongAnswers.map(n => n.toString())],
-            correctAnswer: quotient.toString(),
-            explanation: `${dividend} ÷ ${divisor} = ${quotient}. Division helps us share things equally or find out how many groups we can make!`
-        })
-    }
-
-    return questions.sort(() => Math.random() - 0.5)
-}
-
 export default function MathGame({ onBack }: MathGameProps) {
-    const [questions] = useState(generateQuestions())
     const [showSetup, setShowSetup] = useState(true)
     const [showExplanation, setShowExplanation] = useState(false)
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
     const [showForfeitModal, setShowForfeitModal] = useState(false)
-    const [usedQuestions] = useState(new Set<number>())
+    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+    const [questions] = useState(generateMathQuestions(10))
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 
     const getNextQuestion = () => {
-        let availableQuestions = questions.filter(q => !usedQuestions.has(q.id))
-        if (availableQuestions.length === 0) {
-            // Reset if all questions have been used
-            usedQuestions.clear()
-            availableQuestions = questions
-        }
-        const question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)]
-        usedQuestions.add(question.id)
-        return question
+        const nextIndex = (currentQuestionIndex + 1) % questions.length
+        setCurrentQuestionIndex(nextIndex)
+        return questions[nextIndex]
     }
 
     const {
@@ -142,11 +38,12 @@ export default function MathGame({ onBack }: MathGameProps) {
         handleAnswer,
         isTimerRunning
     } = useGameState({
-        initialRounds: questions.length,
+        initialRounds: 5,
         timePerTurn: 20,
         generateQuestion: getNextQuestion
     })
 
+    // Reset explanation when player/round changes
     useEffect(() => {
         setShowExplanation(false)
         setSelectedAnswer(null)
@@ -162,14 +59,14 @@ export default function MathGame({ onBack }: MathGameProps) {
         setShowSetup(false)
     }
 
-    const handleAnswerSelect = (answer: string) => {
+    const handleAnswerSelect = (answer: number) => {
         if (gameState.hasAnswered[gameState.currentPlayerIndex] || showExplanation) {
             return
         }
 
         setSelectedAnswer(answer)
-        const isCorrect = answer === gameState.currentQuestion.correctAnswer
-        const timeBonus = Math.round((gameState.timeLeft / 20) * 10) // More points for faster answers
+        const isCorrect = answer === gameState.currentQuestion.answer
+        const timeBonus = calculateTimeBonus(gameState.timeLeft, 20)
 
         setShowExplanation(true)
 
@@ -206,7 +103,7 @@ export default function MathGame({ onBack }: MathGameProps) {
     }
 
     const currentPlayer = gameState.players[gameState.currentPlayerIndex]
-    const currentQuestion = gameState.currentQuestion
+    const currentQuestion = gameState.currentQuestion as MathQuestion
     const timeLeftPercentage = (gameState.timeLeft / 20) * 100
 
     return (
@@ -218,42 +115,25 @@ export default function MathGame({ onBack }: MathGameProps) {
             currentRound={gameState.currentRound}
             totalRounds={gameState.totalRounds}
             onBack={onBack}
-            gradientColors={{
-                from: 'blue-400',
-                via: 'purple-500',
-                to: 'violet-500',
-                overlayFrom: 'blue-300',
-                overlayVia: 'purple-400',
-                overlayTo: 'violet-400'
-            }}
+            onForfeit={handleForfeit}
+            gradientColors={GAME_COLORS.math}
         >
             <div className="space-y-8">
-                {/* Player Turn and Score */}
-                <div className="flex justify-between items-center">
+                {/* Player Turn */}
+                <div className="flex justify-center items-center">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         className="text-center"
                     >
-                        <h3 className="text-xl text-white font-medium">
+                        <h3 className="text-xl text-white font-medium text-center bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
                             {currentPlayer.name}'s Turn
                         </h3>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full"
-                    >
-                        <div className="flex items-center gap-2">
-                            <Star className="w-5 h-5 text-yellow-300" />
-                            <span className="text-white font-bold">Score: {currentPlayer.score}</span>
-                        </div>
                     </motion.div>
                 </div>
 
                 {/* Timer Bar */}
-                <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+                <div className="w-full h-2 max-w-2xl mx-auto  bg-white/20 rounded-full overflow-hidden">
                     <motion.div
                         initial={{ width: '100%' }}
                         animate={{ width: `${timeLeftPercentage}%` }}
@@ -276,16 +156,14 @@ export default function MathGame({ onBack }: MathGameProps) {
                     >
                         {/* Question */}
                         <div className="mb-8">
-                            {currentQuestion.imageUrl && (
-                                <div className="relative rounded-2xl overflow-hidden bg-blue-500/90 backdrop-blur-sm aspect-video max-w-2xl mx-auto mb-6 border-2 border-white/20 shadow-lg">
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="text-white/90 text-center p-8">
-                                            <Calculator className="w-16 h-16 mx-auto mb-4" />
-                                            <span className="text-xl font-medium">Round {gameState.currentRound}</span>
-                                        </div>
+                            <div className="relative rounded-2xl overflow-hidden bg-orange-600/90 backdrop-blur-sm aspect-video max-w-2xl mx-auto mb-6 border-2 border-white/20 shadow-lg">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="text-white/90 text-center p-8">
+                                        <Calculator className="w-16 h-16 mx-auto mb-4" />
+                                        <span className="text-xl font-medium">Round {gameState.currentRound}</span>
                                     </div>
                                 </div>
-                            )}
+                            </div>
 
                             <h3 className="text-3xl font-bold text-white mb-8 text-shadow-lg">
                                 {currentQuestion.question}
@@ -293,10 +171,10 @@ export default function MathGame({ onBack }: MathGameProps) {
                         </div>
 
                         {/* Options */}
-                        <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
-                            {currentQuestion.options.map((option: string, index: number) => {
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                            {currentQuestion.options.map((option: number, index: number) => {
                                 const isSelected = selectedAnswer === option
-                                const isCorrect = option === currentQuestion.correctAnswer
+                                const isCorrect = option === currentQuestion.answer
 
                                 return (
                                     <motion.button
@@ -309,27 +187,22 @@ export default function MathGame({ onBack }: MathGameProps) {
                                         onClick={() => handleAnswerSelect(option)}
                                         disabled={!!selectedAnswer}
                                         className={`
-                                            relative p-6 rounded-xl text-left font-medium
+                                            relative p-6 rounded-xl text-center font-medium text-2xl
                                             ${!selectedAnswer
-                                                ? 'bg-purple-500/80 text-white hover:bg-purple-600/80 border-2 border-white/20'
+                                                ? 'bg-orange-500/80 text-white hover:bg-orange-600/80 border-2 border-white/20'
                                                 : isSelected
                                                     ? isCorrect
                                                         ? 'bg-green-500/90 text-white border-2 border-green-400/50'
                                                         : 'bg-red-500/90 text-white border-2 border-red-400/50'
                                                     : isCorrect && showExplanation
                                                         ? 'bg-green-500/90 text-white border-2 border-green-400/50'
-                                                        : 'bg-purple-400/50 text-white/60 border-2 border-white/10'
+                                                        : 'bg-orange-400/50 text-white/60 border-2 border-white/10'
                                             }
                                             transition-all duration-300 shadow-lg
                                         `}
                                     >
-                                        <div className="flex items-center justify-between">
-                                            <span className="flex items-center gap-3 text-lg">
-                                                <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
-                                                    {String.fromCharCode(65 + index)}
-                                                </span>
-                                                {option}
-                                            </span>
+                                        <div className="flex items-center justify-center gap-3">
+                                            <span>{option}</span>
                                             {selectedAnswer && (
                                                 <motion.div
                                                     initial={{ scale: 0 }}
@@ -356,7 +229,7 @@ export default function MathGame({ onBack }: MathGameProps) {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
-                                    className="mt-8 p-6 bg-purple-600/80 backdrop-blur-sm rounded-xl text-white border-2 border-white/20 shadow-lg"
+                                    className="mt-8 p-6 bg-orange-600/80 backdrop-blur-sm rounded-xl text-white border-2 border-white/20 shadow-lg"
                                 >
                                     <p className="text-xl font-medium">
                                         {currentQuestion.explanation}
@@ -366,16 +239,6 @@ export default function MathGame({ onBack }: MathGameProps) {
                         </AnimatePresence>
                     </motion.div>
                 </AnimatePresence>
-
-                {/* Forfeit Button */}
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleForfeit}
-                    className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-white/30 transition-all"
-                >
-                    Forfeit Game
-                </motion.button>
             </div>
         </GameLayout>
     )

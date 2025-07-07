@@ -231,17 +231,17 @@ export default function Home() {
     )
 
     return (
-        <main className="min-h-screen py-16 px-4">
-            <div className="max-w-7xl mx-auto relative z-10">
-                <AnimatedBackground 
-                    gradientFrom="indigo-500"
-                    gradientVia="purple-500"
-                    gradientTo="pink-500"
-                    overlayFrom="indigo-400"
-                    overlayVia="purple-500"
-                    overlayTo="pink-500"
-                    overlayOpacity={0.3}
-                />
+        <main className="min-h-screen py-16 px-4 relative z-10">
+            <AnimatedBackground
+                gradientFrom="indigo-500"
+                gradientVia="purple-500"
+                gradientTo="pink-500"
+                overlayFrom="indigo-400"
+                overlayVia="purple-500"
+                overlayTo="pink-500"
+                overlayOpacity={0.3}
+            />
+            <div className="max-w-7xl mx-auto ">
                 {/* Title */}
                 <motion.div
                     initial={{ y: -50, opacity: 0 }}
@@ -249,7 +249,7 @@ export default function Home() {
                     className="text-center mb-16"
                 >
                     <h1 className="text-5xl sm:text-6xl font-bold text-white mb-4 text-shadow">
-                        Fun Learning Games
+                        KIDSLEARN
                     </h1>
                     <p className="text-xl text-white/90 text-shadow-light">
                         Choose a game and start learning!

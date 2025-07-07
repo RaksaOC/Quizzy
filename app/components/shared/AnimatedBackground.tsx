@@ -28,6 +28,19 @@ const GEOMETRIC_SHAPES = [
     'clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)', // Hexagon
 ]
 
+const getColorValue = (color: string) => {
+    const colors: { [key: string]: string } = {
+        // Dark colors
+        'slate-900': '#0f172a',
+        'gray-900': '#111827',
+        // Neon colors
+        'cyan-500': '#06b6d4',
+        'fuchsia-500': '#d946ef',
+        'teal-500': '#14b8a6',
+    }
+    return colors[color] || color
+}
+
 export default function AnimatedBackground({
     gradientFrom = 'purple-400',
     gradientVia = 'pink-500',
@@ -37,8 +50,18 @@ export default function AnimatedBackground({
     overlayTo = 'pink-500',
     overlayOpacity = 0.3
 }: AnimatedBackgroundProps) {
+    const style = {
+        '--gradient-from': getColorValue(gradientFrom),
+        '--gradient-via': getColorValue(gradientVia),
+        '--gradient-to': getColorValue(gradientTo),
+        '--overlay-from': getColorValue(overlayFrom),
+        '--overlay-via': getColorValue(overlayVia),
+        '--overlay-to': getColorValue(overlayTo),
+        '--overlay-opacity': overlayOpacity,
+    } as React.CSSProperties
+
     return (
-        <div className="fixed inset-0 overflow-hidden z-[-1]">
+        <div className="fixed inset-0 overflow-hidden z-[-1]" style={style}>
             {/* Main Gradient */}
             <motion.div
                 className="absolute inset-0"
@@ -52,8 +75,19 @@ export default function AnimatedBackground({
                     ease: "linear"
                 }}
             >
-                <div className={`absolute inset-0 bg-gradient-to-br from-${gradientFrom} via-${gradientVia} to-${gradientTo}`}></div>
-                <div className={`absolute inset-0 bg-gradient-to-tl from-${overlayFrom} via-${overlayVia} to-${overlayTo} opacity-${Math.round(overlayOpacity * 100)}`}></div>
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: `linear-gradient(to bottom right, var(--gradient-from), var(--gradient-via), var(--gradient-to))`
+                    }}
+                ></div>
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: `linear-gradient(to top left, var(--overlay-from), var(--overlay-via), var(--overlay-to))`,
+                        opacity: `var(--overlay-opacity)`
+                    }}
+                ></div>
             </motion.div>
 
             {/* Floating Icons */}

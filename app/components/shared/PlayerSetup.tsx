@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Smile, ChevronRight, ArrowLeft, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
+import AnimatedBackground from './AnimatedBackground'
 
 interface PlayerSetupProps {
     onComplete: (player1Name: string, player1Avatar: string, player2Name: string, player2Avatar: string) => void
@@ -33,7 +34,15 @@ export default function PlayerSetup({ onComplete }: PlayerSetupProps) {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="min-h-screen flex items-center justify-center p-4 relative z-10">
+            <AnimatedBackground
+                gradientFrom="purple-400"
+                gradientVia="pink-500"
+                gradientTo="red-600"
+                overlayFrom="indigo-400"
+                overlayVia="purple-500"
+                overlayTo="pink-500"
+            />
             <div className="w-full max-w-lg">
                 {/* Back Button */}
                 <motion.div

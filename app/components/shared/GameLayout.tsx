@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Menu, Flag } from 'lucide-react'
 import AnimatedBackground from './AnimatedBackground'
 import PlayerCard from './PlayerCard'
 import ModalDialog from './ModalDialog'
@@ -16,6 +16,7 @@ interface GameLayoutProps {
     currentRound: number
     totalRounds: number
     onBack: () => void
+    onForfeit?: () => void
     children: React.ReactNode
     gradientColors?: {
         from: string
@@ -35,6 +36,7 @@ export default function GameLayout({
     currentRound,
     totalRounds,
     onBack,
+    onForfeit,
     children,
     gradientColors = {
         from: 'purple-400',
@@ -46,6 +48,8 @@ export default function GameLayout({
     }
 }: GameLayoutProps) {
     const [showQuitConfirm, setShowQuitConfirm] = useState(false)
+    const [showForfeitConfirm, setShowForfeitConfirm] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
 
     const handleBackClick = () => {
         setShowQuitConfirm(true)
@@ -54,6 +58,15 @@ export default function GameLayout({
     const handleConfirmQuit = () => {
         setShowQuitConfirm(false)
         onBack()
+    }
+
+    const handleForfeitClick = () => {
+        setShowForfeitConfirm(true)
+    }
+
+    const handleConfirmForfeit = () => {
+        setShowForfeitConfirm(false)
+        onForfeit?.()
     }
 
     return (
@@ -69,31 +82,47 @@ export default function GameLayout({
             />
 
             {/* Game Content */}
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={handleBackClick}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors text-white"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        <span>Back to Menu</span>
-                    </motion.button>
+                <div className="flex flex-col gap-2 sm:gap-4 mb-6 sm:mb-8">
+                    <div className="flex items-center justify-between w-full">
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={handleBackClick}
+                            className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors text-white"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span className="hidden sm:inline">Back to Menu</span>
+                        </motion.button>
 
+                        <div className="text-center flex-1 mx-4">
+                            <h1 className="text-2xl sm:text-4xl font-bold text-white text-shadow">{title}</h1>
+                        </div>
+
+                        {onForfeit && (
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={handleForfeitClick}
+                                className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-red-500/80 hover:bg-red-500 rounded-full transition-colors text-white"
+                            >
+                                <Flag className="w-5 h-5" />
+                                <span className="hidden sm:inline">Forfeit</span>
+                            </motion.button>
+                        )}
+                    </div>
+
+                    {/* Round Display */}
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-white text-shadow">{title}</h1>
-                        <div className="mt-2 text-white/80 font-medium">
+                        <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm sm:text-base text-white/90 font-medium">
                             Round {currentRound} of {totalRounds}
                         </div>
                     </div>
-
-                    <div className="w-24" /> {/* Spacer for alignment */}
                 </div>
 
                 {/* Player Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                     <PlayerCard
                         name={players[0].name}
                         avatar={players[0].avatar}
@@ -114,7 +143,7 @@ export default function GameLayout({
                 </div>
 
                 {/* Game Content */}
-                <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-xl">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl">
                     {children}
                 </div>
             </div>
@@ -149,6 +178,37 @@ export default function GameLayout({
                     </div>
                 </div>
             </ModalDialog>
+
+            {/* Forfeit Confirmation Modal */}
+            <ModalDialog
+                isOpen={showForfeitConfirm}
+                onClose={() => setShowForfeitConfirm(false)}
+                title="Forfeit Game?"
+            >
+                <div className="space-y-4">
+                    <p className="text-gray-600">
+                        Are you sure you want to forfeit the game? Your opponent will win this round.
+                    </p>
+                    <div className="flex justify-end gap-4">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowForfeitConfirm(false)}
+                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                        >
+                            Cancel
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={handleConfirmForfeit}
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        >
+                            Forfeit
+                        </motion.button>
+                    </div>
+                </div>
+            </ModalDialog>
         </div>
     )
 }
@@ -168,6 +228,8 @@ interface SinglePlayerGameLayoutProps {
 }
 
 export function SinglePlayerGameLayout({ title, onBack, gradientColors, children }: SinglePlayerGameLayoutProps) {
+    const [showMenu, setShowMenu] = useState(false)
+
     return (
         <div className={`min-h-screen bg-gradient-to-br from-${gradientColors.from} via-${gradientColors.via} to-${gradientColors.to} p-4 relative overflow-hidden`}>
             {/* Background Animation */}
@@ -182,8 +244,27 @@ export function SinglePlayerGameLayout({ title, onBack, gradientColors, children
 
             <div className="relative z-10">
                 {/* Header */}
-                <div className="max-w-7xl mx-auto mb-8">
-                    <div className="flex justify-between items-center">
+                <div className="max-w-7xl mx-auto mb-4 sm:mb-6 lg:mb-8">
+                    {/* Mobile Header */}
+                    <div className="sm:hidden flex justify-between items-center">
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => setShowMenu(!showMenu)}
+                            className="flex items-center gap-2 text-white font-bold text-lg hover:bg-white/20 rounded-full px-4 py-2 transition-all"
+                        >
+                            <Menu className="w-5 h-5" />
+                        </motion.button>
+
+                        <h1 className="text-2xl font-bold text-white text-center flex-1 mx-4">
+                            {title}
+                        </h1>
+
+                        <div className="w-10" /> {/* Mobile spacer */}
+                    </div>
+
+                    {/* Desktop Header */}
+                    <div className="hidden sm:flex justify-between items-center">
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -191,15 +272,35 @@ export function SinglePlayerGameLayout({ title, onBack, gradientColors, children
                             className="flex items-center gap-2 text-white font-bold text-lg hover:bg-white/20 rounded-full px-4 py-2 transition-all"
                         >
                             <ArrowLeft className="w-5 h-5" />
-                            Back
+                            <span>Back</span>
                         </motion.button>
 
                         <h1 className="text-4xl font-bold text-white text-center">
                             {title}
                         </h1>
 
-                        <div className="w-24" /> {/* Spacer for alignment */}
+                        <div className="w-24" /> {/* Desktop spacer */}
                     </div>
+
+                    {/* Mobile Menu */}
+                    {showMenu && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="sm:hidden w-full bg-white/10 backdrop-blur-lg rounded-2xl p-4 mt-4"
+                        >
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={onBack}
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors text-white"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                                <span>Back to Menu</span>
+                            </motion.button>
+                        </motion.div>
+                    )}
                 </div>
 
                 {/* Content */}

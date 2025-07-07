@@ -5,6 +5,17 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    "from-purple-400",
+    "via-pink-500",
+    "to-red-600",
+    "from-indigo-400",
+    "via-purple-500",
+    "to-pink-500",
+    {
+      pattern: /^opacity-/,
+    },
+  ],
   theme: {
     extend: {
       colors: {
@@ -73,7 +84,29 @@ module.exports = {
         glow: "0 0 30px rgba(255, 107, 157, 0.6)",
         "glow-hover": "0 0 50px rgba(78, 205, 196, 0.8)",
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".perspective-1000": {
+          perspective: "1000px",
+        },
+        ".preserve-3d": {
+          transformStyle: "preserve-3d",
+        },
+        ".backface-hidden": {
+          backfaceVisibility: "hidden",
+        },
+        ".rotate-y-180": {
+          transform: "rotateY(180deg)",
+        },
+      });
+    },
+  ],
 };

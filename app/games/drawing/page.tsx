@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import DrawingGame from '@/app/components/DrawingGame'
+import AnimatedBackground from '@/app/components/shared/AnimatedBackground'
 
 export default function DrawingPage() {
     const router = useRouter()
