@@ -174,7 +174,7 @@ export default function Home() {
 
                         {/* Multiplayer Badge */}
                         {game.isMultiplayer && (
-                            <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                            <div className="absolute hidden lg:flex top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                                 <span className="text-white text-sm font-medium">2 Players</span>
                             </div>
                         )}
@@ -209,7 +209,7 @@ export default function Home() {
                 >
                     {Icon}
                 </motion.div>
-                <h2 className="text-4xl sm:text-5xl font-bold text-white text-shadow">
+                <h2 className="text-4xl sm:text-5xl font-bold text-white text-shadow text-center">
                     {title}
                 </h2>
                 <motion.div
@@ -271,7 +271,7 @@ export default function Home() {
                         >
                             <Star className="text-white" />
                         </motion.div>
-                        <h2 className="text-4xl sm:text-5xl font-bold text-white text-shadow">
+                        <h2 className="text-4xl sm:text-5xl font-bold text-white text-shadow text-center">
                             Featured Game
                         </h2>
                         <motion.div

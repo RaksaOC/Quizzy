@@ -104,7 +104,7 @@ export default function CharacterCreator({ onBack }: CharacterCreatorProps) {
                         className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors text-white"
                     >
                         <ArrowLeft className="w-5 h-5" />
-                        <span>Back to Menu</span>
+                        <span className='hidden lg:block'>Back to Menu</span>
                     </motion.button>
                     <h1 className="text-3xl font-bold text-white text-center">Create Your 3D Character</h1>
                     <div className="w-24" />

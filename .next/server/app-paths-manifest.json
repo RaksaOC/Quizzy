@@ -1,4 +1,8 @@
 {
-  "/not-found": "app/not-found.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/games/character/page": "app/games/character/page.js",
+  "/games/quiz/page": "app/games/quiz/page.js",
+  "/games/memory/page": "app/games/memory/page.js",
+  "/games/digital-literacy/page": "app/games/digital-literacy/page.js",
+  "/games/drawing/page": "app/games/drawing/page.js"
 }
