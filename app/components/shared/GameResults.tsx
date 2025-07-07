@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Trophy, Star, ArrowLeft, RotateCcw } from 'lucide-react'
-import { Player } from '@/app/hooks/useGameState'
+import { Player } from '@/app/utils/types'
 
 interface GameResultsProps {
     winner: Player
@@ -94,7 +94,7 @@ export default function GameResults({
                                 </div>
                                 <div className="flex items-center justify-center gap-1 sm:gap-2">
                                     <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
-                                    <span className="text-lg sm:text-xl font-bold">{winner.score}</span>
+                                    <span className="text-lg sm:text-xl font-bold text-black">{winner.score}</span>
                                 </div>
                                 <div className="text-xs sm:text-sm text-gray-500">
                                     Rounds Won: {winner.roundsWon}
@@ -108,7 +108,7 @@ export default function GameResults({
                                 </div>
                                 <div className="flex items-center justify-center gap-1 sm:gap-2">
                                     <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                                    <span className="text-lg sm:text-xl font-bold">{loser.score}</span>
+                                    <span className="text-lg sm:text-xl font-bold text-black">{loser.score}</span>
                                 </div>
                                 <div className="text-xs sm:text-sm text-gray-500">
                                     Rounds Won: {loser.roundsWon}

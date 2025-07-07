@@ -23,13 +23,16 @@ export default function QuizGame({ onBack }: QuizGameProps) {
     const [showExplanation, setShowExplanation] = useState(false)
     const [showForfeitModal, setShowForfeitModal] = useState(false)
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
-    const [questions] = useState(getRandomQuizQuestions(10))
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+    const [questions] = useState(getRandomQuizQuestions(20))
+    const [currentQuestionIndices, setCurrentQuestionIndices] = useState([0, 1])
 
-    const getNextQuestion = () => {
-        const nextIndex = (currentQuestionIndex + 1) % questions.length
-        setCurrentQuestionIndex(nextIndex)
-        return questions[nextIndex]
+    const getNextQuestion = (playerIndex: number) => {
+        setCurrentQuestionIndices(prev => {
+            const newIndices = [...prev]
+            newIndices[playerIndex] = (prev[playerIndex] + 2) % questions.length
+            return newIndices
+        })
+        return questions[currentQuestionIndices[playerIndex]]
     }
 
     const {
@@ -40,7 +43,7 @@ export default function QuizGame({ onBack }: QuizGameProps) {
     } = useGameState({
         initialRounds: 5,
         timePerTurn: 20,
-        generateQuestion: getNextQuestion
+        generateQuestion: (playerIndex: number) => getNextQuestion(playerIndex)
     })
 
     // Reset explanation when player/round changes
@@ -60,14 +63,15 @@ export default function QuizGame({ onBack }: QuizGameProps) {
     }
 
     const handleAnswerSelect = (answer: string) => {
-        if (gameState.hasAnswered[gameState.currentPlayerIndex] || showExplanation) {
+        const currentPlayerState = gameState.playerStates[gameState.currentPlayerIndex]
+        if (currentPlayerState.hasAnswered || showExplanation) {
             return
         }
 
         setSelectedAnswer(answer)
-        const currentQuestion = gameState.currentQuestion as MultipleChoiceQuestion
+        const currentQuestion = currentPlayerState.currentQuestion as MultipleChoiceQuestion
         const isCorrect = answer === currentQuestion.correctAnswer
-        const timeBonus = calculateTimeBonus(gameState.timeLeft, 20)
+        const timeBonus = calculateTimeBonus(currentPlayerState.timeLeft, 20)
 
         setShowExplanation(true)
 
@@ -104,15 +108,16 @@ export default function QuizGame({ onBack }: QuizGameProps) {
     }
 
     const currentPlayer = gameState.players[gameState.currentPlayerIndex]
-    const currentQuestion = gameState.currentQuestion as MultipleChoiceQuestion
-    const timeLeftPercentage = (gameState.timeLeft / 20) * 100
+    const currentPlayerState = gameState.playerStates[gameState.currentPlayerIndex]
+    const currentQuestion = currentPlayerState.currentQuestion as MultipleChoiceQuestion
+    const timeLeftPercentage = (currentPlayerState.timeLeft / 20) * 100
 
     return (
         <GameLayout
             title="Quiz Time"
             players={gameState.players}
             currentPlayerIndex={gameState.currentPlayerIndex}
-            timeLeft={gameState.timeLeft}
+            timeLeft={currentPlayerState.timeLeft}
             currentRound={gameState.currentRound}
             totalRounds={gameState.totalRounds}
             onBack={onBack}

@@ -6,7 +6,7 @@ import { ArrowLeft, Menu, Flag } from 'lucide-react'
 import AnimatedBackground from './AnimatedBackground'
 import PlayerCard from './PlayerCard'
 import ModalDialog from './ModalDialog'
-import { Player } from '@/app/hooks/useGameState'
+import { Player } from '@/app/utils/types'
 
 interface GameLayoutProps {
     title: string

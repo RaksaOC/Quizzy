@@ -1,27 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-
-export interface Player {
-  name: string;
-  avatar: string;
-  score: number;
-  roundsWon: number;
-}
-
-export interface GameState {
-  players: [Player, Player];
-  currentPlayerIndex: number;
-  timeLeft: number;
-  currentRound: number;
-  totalRounds: number;
-  isGameOver: boolean;
-  currentQuestion: any;
-  hasAnswered: boolean[];
-}
+import { Player, GameState, PlayerGameState } from "../utils/types";
 
 interface UseGameStateProps {
   initialRounds: number;
   timePerTurn: number;
-  generateQuestion: () => any;
+  generateQuestion: (playerIndex: number) => any;
 }
 
 export function useGameState({
@@ -35,12 +18,24 @@ export function useGameState({
       { name: "", avatar: "", score: 0, roundsWon: 0 },
     ],
     currentPlayerIndex: 0,
-    timeLeft: timePerTurn,
     currentRound: 1,
     totalRounds: initialRounds,
     isGameOver: false,
-    currentQuestion: null,
-    hasAnswered: [false, false],
+    playerStates: [
+      {
+        hasAnswered: false,
+        timeLeft: timePerTurn,
+        currentQuestion: null,
+        answeredQuestions: [],
+      },
+      {
+        hasAnswered: false,
+        timeLeft: timePerTurn,
+        currentQuestion: null,
+        answeredQuestions: [],
+      },
+    ],
+    remainingQuestions: [],
   });
 
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -48,23 +43,56 @@ export function useGameState({
   // Timer effect
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isTimerRunning && gameState.timeLeft > 0 && !gameState.isGameOver) {
+    if (
+      isTimerRunning &&
+      gameState.playerStates[gameState.currentPlayerIndex].timeLeft > 0 &&
+      !gameState.isGameOver
+    ) {
       timer = setInterval(() => {
         setGameState((prev) => ({
           ...prev,
-          timeLeft: prev.timeLeft - 1,
+          playerStates: [
+            prev.currentPlayerIndex === 0
+              ? {
+                  ...prev.playerStates[0],
+                  timeLeft: prev.playerStates[0].timeLeft - 1,
+                }
+              : prev.playerStates[0],
+            prev.currentPlayerIndex === 1
+              ? {
+                  ...prev.playerStates[1],
+                  timeLeft: prev.playerStates[1].timeLeft - 1,
+                }
+              : prev.playerStates[1],
+          ] as [PlayerGameState, PlayerGameState],
         }));
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isTimerRunning, gameState.timeLeft, gameState.isGameOver]);
+  }, [
+    isTimerRunning,
+    gameState.playerStates,
+    gameState.currentPlayerIndex,
+    gameState.isGameOver,
+  ]);
 
   // Watch for time running out
   useEffect(() => {
-    if (gameState.timeLeft === 0 && !gameState.isGameOver) {
+    if (
+      gameState.playerStates[gameState.currentPlayerIndex].timeLeft === 0 &&
+      !gameState.isGameOver
+    ) {
       handleTimeUp();
     }
-  }, [gameState.timeLeft]);
+  }, [gameState.playerStates, gameState.currentPlayerIndex]);
+
+  const getNewQuestion = useCallback(
+    (playerIndex: number) => {
+      const question = generateQuestion(playerIndex);
+      return question;
+    },
+    [generateQuestion]
+  );
 
   const initializePlayers = (
     player1Name: string,
@@ -72,16 +100,30 @@ export function useGameState({
     player2Name: string,
     player2Avatar: string
   ) => {
+    const question1 = getNewQuestion(0);
+    const question2 = getNewQuestion(1);
+
     setGameState((prev) => ({
       ...prev,
       players: [
         { name: player1Name, avatar: player1Avatar, score: 0, roundsWon: 0 },
         { name: player2Name, avatar: player2Avatar, score: 0, roundsWon: 0 },
       ],
-      currentQuestion: generateQuestion(),
-      timeLeft: timePerTurn,
+      playerStates: [
+        {
+          hasAnswered: false,
+          timeLeft: timePerTurn,
+          currentQuestion: question1,
+          answeredQuestions: [],
+        },
+        {
+          hasAnswered: false,
+          timeLeft: timePerTurn,
+          currentQuestion: question2,
+          answeredQuestions: [],
+        },
+      ],
       currentPlayerIndex: 0,
-      hasAnswered: [false, false],
     }));
     setIsTimerRunning(true);
   };
@@ -90,7 +132,10 @@ export function useGameState({
     const nextPlayerIndex = 1 - currentState.currentPlayerIndex;
 
     // If both players have answered, move to next round
-    if (currentState.hasAnswered[0] && currentState.hasAnswered[1]) {
+    if (
+      currentState.playerStates[0].hasAnswered &&
+      currentState.playerStates[1].hasAnswered
+    ) {
       // Determine round winner
       const roundScores = [
         currentState.players[0].score,
@@ -109,14 +154,29 @@ export function useGameState({
         return currentState;
       }
 
+      // Generate new questions for next round
+      const question1 = getNewQuestion(0);
+      const question2 = getNewQuestion(1);
+
       // Setup next round
       return {
         ...currentState,
         currentRound: currentState.currentRound + 1,
         currentPlayerIndex: 0,
-        hasAnswered: [false, false],
-        timeLeft: timePerTurn,
-        currentQuestion: generateQuestion(),
+        playerStates: [
+          {
+            hasAnswered: false,
+            timeLeft: timePerTurn,
+            currentQuestion: question1,
+            answeredQuestions: [],
+          },
+          {
+            hasAnswered: false,
+            timeLeft: timePerTurn,
+            currentQuestion: question2,
+            answeredQuestions: [],
+          },
+        ] as [PlayerGameState, PlayerGameState],
       };
     }
 
@@ -124,7 +184,6 @@ export function useGameState({
     return {
       ...currentState,
       currentPlayerIndex: nextPlayerIndex,
-      timeLeft: timePerTurn,
     };
   };
 
@@ -138,13 +197,20 @@ export function useGameState({
       const newState = { ...prev };
       const points = isCorrect ? 10 + timeBonus : 0;
       newState.players[playerIndex].score += points;
-      newState.hasAnswered[playerIndex] = true;
+
+      // Mark current question as answered
+      newState.playerStates[playerIndex].hasAnswered = true;
+      newState.playerStates[playerIndex].answeredQuestions.push(
+        newState.playerStates[playerIndex].currentQuestion.id
+      );
 
       // Move to next player or round
       const updatedState = moveToNextPlayer(newState);
 
       // Restart timer for next player/round if game isn't over
       if (!updatedState.isGameOver) {
+        updatedState.playerStates[updatedState.currentPlayerIndex].timeLeft =
+          timePerTurn;
         setIsTimerRunning(true);
       }
 
@@ -156,7 +222,7 @@ export function useGameState({
     setIsTimerRunning(false);
 
     // Auto-submit wrong answer for current player if they haven't answered
-    if (!gameState.hasAnswered[gameState.currentPlayerIndex]) {
+    if (!gameState.playerStates[gameState.currentPlayerIndex].hasAnswered) {
       handleAnswer(gameState.currentPlayerIndex, false, 0);
     }
   };

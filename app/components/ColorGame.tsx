@@ -25,13 +25,16 @@ export default function ColorGame({ onBack }: ColorGameProps) {
     const [showExplanation, setShowExplanation] = useState(false)
     const [showForfeitModal, setShowForfeitModal] = useState(false)
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
-    const [questions] = useState(generateColorQuestions(10))
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+    const [questions] = useState(generateColorQuestions(20))
+    const [currentQuestionIndices, setCurrentQuestionIndices] = useState([0, 1])
 
-    const getNextQuestion = () => {
-        const nextIndex = (currentQuestionIndex + 1) % questions.length
-        setCurrentQuestionIndex(nextIndex)
-        return questions[nextIndex]
+    const getNextQuestion = (playerIndex: number) => {
+        setCurrentQuestionIndices(prev => {
+            const newIndices = [...prev]
+            newIndices[playerIndex] = (prev[playerIndex] + 2) % questions.length
+            return newIndices
+        })
+        return questions[currentQuestionIndices[playerIndex]]
     }
 
     const {
@@ -42,7 +45,7 @@ export default function ColorGame({ onBack }: ColorGameProps) {
     } = useGameState({
         initialRounds: 5,
         timePerTurn: 20,
-        generateQuestion: getNextQuestion
+        generateQuestion: (playerIndex: number) => getNextQuestion(playerIndex)
     })
 
     // Reset explanation when player/round changes
@@ -62,14 +65,15 @@ export default function ColorGame({ onBack }: ColorGameProps) {
     }
 
     const handleAnswerSelect = (answer: number) => {
-        if (gameState.hasAnswered[gameState.currentPlayerIndex] || showExplanation) {
+        const currentPlayerState = gameState.playerStates[gameState.currentPlayerIndex]
+        if (currentPlayerState.hasAnswered || showExplanation) {
             return
         }
 
         setSelectedAnswer(answer)
-        const currentQuestion = gameState.currentQuestion as ColorQuestion
+        const currentQuestion = currentPlayerState.currentQuestion as ColorQuestion
         const isCorrect = answer === currentQuestion.correctAnswer
-        const timeBonus = calculateTimeBonus(gameState.timeLeft, 20)
+        const timeBonus = calculateTimeBonus(currentPlayerState.timeLeft, 20)
 
         setShowExplanation(true)
 
@@ -106,15 +110,16 @@ export default function ColorGame({ onBack }: ColorGameProps) {
     }
 
     const currentPlayer = gameState.players[gameState.currentPlayerIndex]
-    const currentQuestion = gameState.currentQuestion as ColorQuestion
-    const timeLeftPercentage = (gameState.timeLeft / 20) * 100
+    const currentPlayerState = gameState.playerStates[gameState.currentPlayerIndex]
+    const currentQuestion = currentPlayerState.currentQuestion as ColorQuestion
+    const timeLeftPercentage = (currentPlayerState.timeLeft / 20) * 100
 
     return (
         <GameLayout
             title="Color Match"
             players={gameState.players}
             currentPlayerIndex={gameState.currentPlayerIndex}
-            timeLeft={gameState.timeLeft}
+            timeLeft={currentPlayerState.timeLeft}
             currentRound={gameState.currentRound}
             totalRounds={gameState.totalRounds}
             onBack={onBack}

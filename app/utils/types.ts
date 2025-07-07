@@ -72,13 +72,19 @@ export interface GameColors {
   overlayTo: string;
 }
 
+export interface PlayerGameState {
+  hasAnswered: boolean;
+  timeLeft: number;
+  currentQuestion: any;
+  answeredQuestions: number[]; // Track question IDs that have been answered
+}
+
 export interface GameState {
   players: [Player, Player];
   currentPlayerIndex: number;
   currentRound: number;
   totalRounds: number;
-  timeLeft: number;
   isGameOver: boolean;
-  hasAnswered: boolean[];
-  currentQuestion: any;
+  playerStates: [PlayerGameState, PlayerGameState];
+  remainingQuestions: any[]; // Questions that haven't been used yet
 }
