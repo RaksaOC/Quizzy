@@ -156,16 +156,23 @@ export default function GeographyGame({ onBack }: GeographyGameProps) {
                     >
                         {/* Question */}
                         <div className="mb-8">
-                            <div className="relative rounded-2xl overflow-hidden bg-blue-600/90 backdrop-blur-sm aspect-video max-w-2xl mx-auto mb-6 border-2 border-white/20 shadow-lg">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="text-white/90 text-center p-8">
-                                        <Globe2 className="w-16 h-16 mx-auto mb-4" />
-                                        <span className="text-xl font-medium">Round {gameState.currentRound}</span>
+                            {
+                                currentQuestion.image && (
+                                    <div className="relative rounded-2xl overflow-hidden bg-violet-600/90 backdrop-blur-sm aspect-video max-w-2xl mx-auto mb-6 border-2 border-white/20 shadow-lg">
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-full h-full">
+                                                <img
+                                                    src={currentQuestion.image}
+                                                    alt={currentQuestion.question}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                )
+                            }
 
-                            <h3 className="text-3xl font-bold text-white mb-8 text-shadow-lg">
+                            <h3 className="text-3xl font-bold text-white mb-8 text-shadow-lg max-w-2xl mx-auto">
                                 {currentQuestion.question}
                             </h3>
                         </div>
@@ -234,7 +241,7 @@ export default function GeographyGame({ onBack }: GeographyGameProps) {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
-                                    className="mt-8 p-6 bg-blue-600/80 backdrop-blur-sm rounded-xl text-white border-2 border-white/20 shadow-lg"
+                                    className="mt-8 p-6 bg-blue-600/80 backdrop-blur-sm rounded-xl text-white border-2 border-white/20 shadow-lg max-w-2xl mx-auto"
                                 >
                                     <p className="text-xl font-medium">
                                         {currentQuestion.explanation}

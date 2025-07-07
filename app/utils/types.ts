@@ -11,6 +11,7 @@ export interface BaseQuestion {
   id: number;
   question: string;
   explanation: string;
+  image?: string;
 }
 
 export interface MultipleChoiceQuestion extends BaseQuestion {
