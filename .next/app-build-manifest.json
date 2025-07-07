@@ -1,70 +1,139 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+    "/_not-found": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/app/_not-found-b7427e8c91861b33.js"
     ],
     "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/css/f838c4fa431b222e.css",
+      "static/chunks/app/layout-d2c47f8469692cd2.js"
     ],
-    "/games/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/layout.js"
-    ],
-    "/games/digital-literacy/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/digital-literacy/page.js"
-    ],
-    "/games/quiz/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/quiz/page.js"
-    ],
-    "/games/science/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/science/page.js"
-    ],
-    "/games/geography/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/geography/page.js"
+    "/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/app/page-e0095a958c7bf1ae.js"
     ],
     "/games/animals/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/animals/page.js"
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/animals/page-d15115604942166c.js"
     ],
-    "/games/math/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/math/page.js"
-    ],
-    "/games/colors/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/colors/page.js"
-    ],
-    "/games/memory/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/memory/page.js"
+    "/games/layout": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/app/games/layout-893e1b4bf898ce76.js"
     ],
     "/games/character/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/character/page.js"
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/app/games/character/page-3f71ecba9e316c3a.js"
     ],
     "/games/drawing/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/drawing/page.js"
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/app/games/drawing/page-2ea381bec58c2be1.js"
+    ],
+    "/games/geography/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/geography/page-e4513d90eb49a7e1.js"
+    ],
+    "/games/math/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/math/page-d21bcb32b386cf85.js"
+    ],
+    "/games/memory/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/682-e9e1550810b47cc2.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/app/games/memory/page-e3446b89295f6f19.js"
+    ],
+    "/games/quiz/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/quiz/page-e0845f344a0cc2ae.js"
+    ],
+    "/games/science/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/science/page-b2d926c1dfb98997.js"
+    ],
+    "/games/digital-literacy/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/digital-literacy/page-e4adbc1a61802a84.js"
+    ],
+    "/games/colors/page": [
+      "static/chunks/webpack-b14a2c7383ccf1b1.js",
+      "static/chunks/fd9d1056-d402c3289b63a580.js",
+      "static/chunks/938-4432a6cc8b414e28.js",
+      "static/chunks/main-app-6b88a752fc0ff473.js",
+      "static/chunks/220-4baf5cc9df729e90.js",
+      "static/chunks/44-f2e127537d24ef23.js",
+      "static/chunks/753-c233645b0521b823.js",
+      "static/chunks/329-5c47e41b806b24dd.js",
+      "static/chunks/app/games/colors/page-7199f4df5402df98.js"
     ]
   }
 }

@@ -103,11 +103,11 @@ export const getRandomScienceQuestions = (
 };
 
 // Helper function to get questions by category
-export const getQuestionsByCategory = (
+export default function getQuestionsByCategory(
   category: "biology" | "chemistry" | "physics" | "space" | "earth"
-): ScienceQuestion[] => {
+): ScienceQuestion[] {
   return scienceQuestions.filter((q) => q.category === category);
-};
+}
 
 // Helper function to get questions by difficulty
 export const getQuestionsByDifficulty = (

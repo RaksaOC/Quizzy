@@ -29,6 +29,7 @@ export interface MathQuestion extends BaseQuestion {
   operator: string;
   answer: number;
   options: number[];
+  correctAnswer: string;
 }
 
 export interface ColorQuestion extends BaseQuestion {

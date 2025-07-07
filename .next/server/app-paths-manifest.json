@@ -1,7 +1,14 @@
 {
+  "/_not-found": "app/_not-found.js",
   "/page": "app/page.js",
   "/games/animals/page": "app/games/animals/page.js",
-  "/games/drawing/page": "app/games/drawing/page.js",
   "/games/character/page": "app/games/character/page.js",
-  "/games/digital-literacy/page": "app/games/digital-literacy/page.js"
+  "/games/drawing/page": "app/games/drawing/page.js",
+  "/games/geography/page": "app/games/geography/page.js",
+  "/games/math/page": "app/games/math/page.js",
+  "/games/memory/page": "app/games/memory/page.js",
+  "/games/quiz/page": "app/games/quiz/page.js",
+  "/games/science/page": "app/games/science/page.js",
+  "/games/digital-literacy/page": "app/games/digital-literacy/page.js",
+  "/games/colors/page": "app/games/colors/page.js"
 }

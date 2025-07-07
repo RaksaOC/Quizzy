@@ -13,6 +13,7 @@ export const geographyQuestions: GeographyQuestion[] = [
       "Leaning Tower 🗿",
       "CN Tower 🌆",
     ],
+    correctAnswer: "Eiffel Tower 🗼",
     facts: [
       "Built in 1889!",
       "Named after Gustave Eiffel",
@@ -32,6 +33,7 @@ export const geographyQuestions: GeographyQuestion[] = [
       "Castle Wall 🏰",
       "City Wall 🏘️",
     ],
+    correctAnswer: "Great Wall 🧱",
     facts: [
       "Built over 2000 years ago!",
       "Over 13,000 miles long",
@@ -46,6 +48,7 @@ export const geographyQuestions: GeographyQuestion[] = [
     type: "city",
     question: "Which city has the most people in Japan?",
     options: ["Tokyo 🗼", "Osaka 🏯", "Kyoto ⛩️", "Sapporo 🏙️"],
+    correctAnswer: "Tokyo 🗼",
     facts: [
       "Capital of Japan!",
       "Has many tall buildings",
@@ -60,6 +63,7 @@ export const geographyQuestions: GeographyQuestion[] = [
     type: "country",
     question: "Which country has the pyramids?",
     options: ["Egypt 🔺", "Greece 🏺", "Italy 🏛️", "India 🕌"],
+    correctAnswer: "Egypt 🔺",
     facts: [
       "Home to ancient pyramids!",
       "Has the River Nile",
@@ -74,6 +78,7 @@ export const geographyQuestions: GeographyQuestion[] = [
     type: "country",
     question: "Which country has the Amazon Rainforest?",
     options: ["Brazil 🌴", "Mexico 🌵", "Canada 🌲", "Australia 🦘"],
+    correctAnswer: "Brazil 🌴",
     facts: [
       "Largest rainforest!",
       "Many unique animals",
@@ -88,6 +93,7 @@ export const geographyQuestions: GeographyQuestion[] = [
     type: "city",
     question: "Which city has Big Ben?",
     options: ["London 🕰️", "Paris 🗼", "Rome 🏛️", "New York 🗽"],
+    correctAnswer: "London 🕰️",
     facts: [
       "Capital of England!",
       "Has red buses",
@@ -102,6 +108,7 @@ export const geographyQuestions: GeographyQuestion[] = [
     type: "country",
     question: "Which country has kangaroos?",
     options: ["Australia 🦘", "China 🐼", "India 🐘", "Canada 🦌"],
+    correctAnswer: "Australia 🦘",
     facts: [
       "Island continent!",
       "Has unique animals",
@@ -116,6 +123,7 @@ export const geographyQuestions: GeographyQuestion[] = [
     type: "landmark",
     question: "Which mountain is the tallest in the world?",
     options: ["Mount Everest 🏔️", "Mount Fuji ⛰️", "Alps 🗻", "Rockies 🌄"],
+    correctAnswer: "Mount Everest 🏔️",
     facts: [
       "Highest mountain!",
       "Very cold at top",

@@ -35,7 +35,9 @@ const shuffleArray = <T>(array: T[]): T[] => {
 export const generateMathQuestion = (
   difficulty: "easy" | "medium" | "hard"
 ): MathQuestion => {
-  let num1: number, num2: number, answer: number;
+  let num1 = 0;
+  let num2 = 0;
+  let answer = 0;
   const operators = ["+", "-", "×", "÷"];
   let operator = operators[Math.floor(Math.random() * operators.length)];
   let explanation = "";
@@ -94,6 +96,7 @@ export const generateMathQuestion = (
     operator,
     answer,
     options,
+    correctAnswer: answer.toString(),
     explanation: `The answer is ${answer}. ${explanation}! 🎯`,
   };
 };
