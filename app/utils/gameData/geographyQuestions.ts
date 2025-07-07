@@ -1,5 +1,5 @@
 import { GeographyQuestion } from "../types";
-import { shuffleArray } from "./helpers";
+import { shuffleArray, shuffleChoices } from "./helpers";
 
 export const geographyQuestions: GeographyQuestion[] = [
   {
@@ -138,12 +138,16 @@ export const geographyQuestions: GeographyQuestion[] = [
 export const getRandomGeographyQuestions = (
   count: number = 5
 ): GeographyQuestion[] => {
-  return shuffleArray(geographyQuestions).slice(0, count);
+  return shuffleArray(geographyQuestions)
+    .slice(0, count)
+    .map((question) => shuffleChoices(question));
 };
 
 // Helper function to get questions by type
 export const getQuestionsByType = (
   type: "country" | "city" | "landmark"
 ): GeographyQuestion[] => {
-  return geographyQuestions.filter((q) => q.type === type);
+  return geographyQuestions
+    .filter((q) => q.type === type)
+    .map((question) => shuffleChoices(question));
 };

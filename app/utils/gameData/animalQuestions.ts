@@ -1,5 +1,5 @@
 import { AnimalQuestion } from "../types";
-import { shuffleArray } from "./helpers";
+import { shuffleArray, shuffleChoices } from "./helpers";
 
 export const animalQuestions: AnimalQuestion[] = [
   {
@@ -8,6 +8,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🦁",
     question: "Which animal is known as the King of the Jungle?",
     options: ["Lion 🦁", "Tiger 🐯", "Elephant 🐘", "Giraffe 🦒"],
+    correctAnswer: "Lion 🦁",
     facts: [
       "Male lions have big manes!",
       "Lions live in groups called prides",
@@ -23,6 +24,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🐘",
     question: "Which animal has a long trunk?",
     options: ["Elephant 🐘", "Zebra 🦓", "Monkey 🐒", "Hippo 🦛"],
+    correctAnswer: "Elephant 🐘",
     facts: [
       "Elephants have amazing memory!",
       "They use their trunks like a nose and hand",
@@ -37,6 +39,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🐧",
     question: "Which bird can swim but can't fly?",
     options: ["Penguin 🐧", "Eagle 🦅", "Parrot 🦜", "Duck 🦆"],
+    correctAnswer: "Penguin 🐧",
     facts: [
       "Penguins are excellent swimmers!",
       "They live in very cold places",
@@ -51,6 +54,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🦒",
     question: "Which animal has the longest neck?",
     options: ["Giraffe 🦒", "Horse 🐎", "Camel 🐪", "Deer 🦌"],
+    correctAnswer: "Giraffe 🦒",
     facts: [
       "Giraffes are very tall!",
       "They eat leaves from tall trees",
@@ -66,6 +70,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🐬",
     question: "Which sea animal is known for being very smart?",
     options: ["Dolphin 🐬", "Fish 🐠", "Octopus 🐙", "Whale 🐋"],
+    correctAnswer: "Dolphin 🐬",
     facts: [
       "Dolphins are very playful!",
       "They live in groups called pods",
@@ -81,6 +86,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🦘",
     question: "Which animal carries its baby in a pouch?",
     options: ["Kangaroo 🦘", "Bear 🐻", "Rabbit 🐰", "Koala 🐨"],
+    correctAnswer: "Kangaroo 🦘",
     facts: [
       "Kangaroos hop to move around!",
       "They have strong tails",
@@ -95,6 +101,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🦉",
     question: "Which bird can see well at night?",
     options: ["Owl 🦉", "Chicken 🐔", "Peacock 🦚", "Flamingo 🦩"],
+    correctAnswer: "Owl 🦉",
     facts: [
       "Owls can turn their heads far!",
       "They fly very quietly",
@@ -109,6 +116,7 @@ export const animalQuestions: AnimalQuestion[] = [
     emoji: "🐢",
     question: "Which animal carries its house on its back?",
     options: ["Turtle 🐢", "Snake 🐍", "Lizard 🦎", "Frog 🐸"],
+    correctAnswer: "Turtle 🐢",
     facts: [
       "Turtles move slowly but steadily!",
       "Their shell protects them",
@@ -124,5 +132,7 @@ export const animalQuestions: AnimalQuestion[] = [
 export const getRandomAnimalQuestions = (
   count: number = 5
 ): AnimalQuestion[] => {
-  return shuffleArray(animalQuestions).slice(0, count);
+  return shuffleArray(animalQuestions)
+    .slice(0, count)
+    .map((question) => shuffleChoices(question));
 };

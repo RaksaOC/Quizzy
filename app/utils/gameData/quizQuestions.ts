@@ -1,5 +1,5 @@
 import { MultipleChoiceQuestion } from "../types";
-import { shuffleArray } from "./helpers";
+import { shuffleArray, shuffleChoices } from "./helpers";
 
 // Quiz Categories
 const CATEGORIES = [
@@ -154,11 +154,13 @@ const QUIZ_QUESTIONS: MultipleChoiceQuestion[] = [
   },
 ];
 
-// Get random quiz questions
+// Helper function to get a random subset of questions
 export const getRandomQuizQuestions = (
   count: number = 5
 ): MultipleChoiceQuestion[] => {
-  return shuffleArray([...QUIZ_QUESTIONS]).slice(0, count);
+  return shuffleArray(QUIZ_QUESTIONS)
+    .slice(0, count)
+    .map((question) => shuffleChoices(question));
 };
 
 // Get questions by category

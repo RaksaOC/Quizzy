@@ -1,5 +1,5 @@
-import { ImageQuestion } from "../types";
-import { shuffleArray } from "./helpers";
+import { ImageQuestion, MultipleChoiceQuestion } from "../types";
+import { shuffleArray, shuffleChoices } from "./helpers";
 
 export const digitalLiteracyQuestions: ImageQuestion[] = [
   {
@@ -96,9 +96,11 @@ export const digitalLiteracyQuestions: ImageQuestion[] = [
   },
 ];
 
-// Get random digital literacy questions
+// Helper function to get a random subset of questions
 export const getRandomDigitalLiteracyQuestions = (
   count: number = 5
-): ImageQuestion[] => {
-  return shuffleArray([...digitalLiteracyQuestions]).slice(0, count);
+): MultipleChoiceQuestion[] => {
+  return shuffleArray(digitalLiteracyQuestions)
+    .slice(0, count)
+    .map((question) => shuffleChoices(question));
 };

@@ -44,6 +44,7 @@ export interface AnimalQuestion extends BaseQuestion {
   emoji: string;
   options: string[];
   facts: string[];
+  correctAnswer: string;
 }
 
 export interface GeographyQuestion extends BaseQuestion {

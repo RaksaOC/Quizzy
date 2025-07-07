@@ -1,5 +1,5 @@
 import { ScienceQuestion } from "../types";
-import { shuffleArray } from "./helpers";
+import { shuffleArray, shuffleChoices } from "./helpers";
 
 export const scienceQuestions: ScienceQuestion[] = [
   {
@@ -99,7 +99,9 @@ export const scienceQuestions: ScienceQuestion[] = [
 export const getRandomScienceQuestions = (
   count: number = 5
 ): ScienceQuestion[] => {
-  return shuffleArray(scienceQuestions).slice(0, count);
+  return shuffleArray(scienceQuestions)
+    .slice(0, count)
+    .map((question) => shuffleChoices(question));
 };
 
 // Helper function to get questions by category

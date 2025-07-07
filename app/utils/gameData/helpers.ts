@@ -8,6 +8,28 @@ export const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
+// Shuffle choices while preserving the correct answer
+export const shuffleChoices = <
+  T extends { options: string[]; correctAnswer: string }
+>(
+  question: T
+): T => {
+  const correctAnswer = question.correctAnswer;
+  const otherOptions = question.options.filter((opt) => opt !== correctAnswer);
+  const shuffledOtherOptions = shuffleArray(otherOptions);
+
+  // Insert correct answer at random position
+  const randomIndex = Math.floor(
+    Math.random() * (shuffledOtherOptions.length + 1)
+  );
+  shuffledOtherOptions.splice(randomIndex, 0, correctAnswer);
+
+  return {
+    ...question,
+    options: shuffledOtherOptions,
+  };
+};
+
 // Generate random number within range
 export const getRandomNumber = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
